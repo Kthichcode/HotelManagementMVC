@@ -2,6 +2,7 @@
 using DataAccessObjects;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Services;
 
 namespace HotelManagementMVC
 {
@@ -30,6 +31,8 @@ namespace HotelManagementMVC
             .AddDefaultTokenProviders();
 
             builder.Services.AddControllersWithViews();
+            builder.Services.AddScoped<IAccountService, AccountService>();
+
 
             var app = builder.Build();
 
