@@ -1,8 +1,21 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h2>@ViewData["Title"]</h2>
+
+<!-- Hiển thị thông báo nếu có -->
+@if (ViewBag.SuccessMessage != null)
+{
+    <div class="alert alert-success">
+        @ViewBag.SuccessMessage
+    </div>
+}
+
+<p>Welcome to the Hotel Management System!</p>
+
+<!-- Các nút Login và Register -->
+<div>
+    <a href="@Url.Action("Login", "Account")" class="btn btn-primary">Login</a>
+    <a href="@Url.Action("Register", "Account")" class="btn btn-secondary">Register</a>
 </div>
