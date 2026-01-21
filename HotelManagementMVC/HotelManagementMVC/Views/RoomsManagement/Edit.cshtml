@@ -1,0 +1,40 @@
+﻿@model HotelManagementMVC.Models.RoomFormViewModel
+
+<h2>@(Model.Id == 0 ? "Create Room" : "Edit Room")</h2>
+
+<div style="color:red;">
+    @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+    {
+        <div>@err.ErrorMessage</div>
+    }
+</div>
+
+<form method="post">
+    @if (Model.Id != 0)
+    {
+        <input type="hidden" asp-for="Id" />
+    }
+
+    <div>
+        <label>Room Number</label><br />
+        <input asp-for="RoomNumber" />
+        <span asp-validation-for="RoomNumber" style="color:red;"></span>
+    </div>
+
+    <div>
+        <label>Room Type</label><br />
+        <select asp-for="RoomTypeId" asp-items="Model.RoomTypes"></select>
+        <span asp-validation-for="RoomTypeId" style="color:red;"></span>
+    </div>
+
+    <div>
+        <label>Status</label><br />
+        <select asp-for="Status" asp-items="Model.StatusOptions"></select>
+    </div>
+
+    <button type="submit">Save</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

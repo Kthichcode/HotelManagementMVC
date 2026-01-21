@@ -1,7 +1,7 @@
 ﻿using BusinessObjects;
 using Microsoft.AspNetCore.Identity;
 
-namespace Services
+namespace Services.Interfaces
 {
     public interface IAccountService
     {

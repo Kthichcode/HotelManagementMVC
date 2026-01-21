@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using HotelManagementMVC.Models;
-using Services;
+using Services.Interfaces;
 
 namespace HotelManagementMVC.Controllers
 {

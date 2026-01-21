@@ -1,0 +1,29 @@
+﻿@model List<BusinessObjects.Entities.Room>
+
+<h2>Rooms Management</h2>
+<a asp-action="Create">Create New Room</a>
+
+<table border="1" cellpadding="8">
+    <tr>
+        <th>Room Number</th>
+        <th>Type</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
+
+    @foreach (var r in Model)
+    {
+        <tr>
+            <td>@r.RoomNumber</td>
+            <td>@(r.RoomType != null ? r.RoomType.Name : "")</td>
+            <td>@r.Status</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@r.Id">Edit</a>
+                <form asp-action="Delete" method="post" style="display:inline;">
+                    <input type="hidden" name="id" value="@r.Id" />
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+    }
+</table>

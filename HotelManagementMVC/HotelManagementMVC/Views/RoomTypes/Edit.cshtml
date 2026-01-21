@@ -1,0 +1,33 @@
+﻿@model HotelManagementMVC.Models.RoomTypeFormViewModel
+
+<h2>@(Model.Id == 0 ? "Create Room Type" : "Edit Room Type")</h2>
+
+<form method="post">
+    @if (Model.Id != 0)
+    {
+        <input type="hidden" asp-for="Id" />
+    }
+
+    <div>
+        <label>Name</label><br />
+        <input asp-for="Name" />
+        <span asp-validation-for="Name" style="color:red;"></span>
+    </div>
+
+    <div>
+        <label>Price Per Night</label><br />
+        <input asp-for="PricePerNight" />
+        <span asp-validation-for="PricePerNight" style="color:red;"></span>
+    </div>
+
+    <div>
+        <label>Description</label><br />
+        <textarea asp-for="Description"></textarea>
+    </div>
+
+    <button type="submit">Save</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

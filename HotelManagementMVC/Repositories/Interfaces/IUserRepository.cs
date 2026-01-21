@@ -1,7 +1,7 @@
 ﻿using BusinessObjects;
 using System.Threading.Tasks;
 
-namespace Repositories
+namespace Repositories.Interfaces
 {
     public interface IUserRepository
     {
