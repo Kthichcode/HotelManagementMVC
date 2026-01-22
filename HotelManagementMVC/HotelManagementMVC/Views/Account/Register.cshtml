@@ -13,6 +13,13 @@
         <input type="text" id="FullName" name="FullName" class="form-control" />
     </div>
 
+    <div class="mb-3">
+        <label>Email</label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+
     <div class="form-group">
         <label for="Username">Username</label>
         <input type="text" id="Username" name="Username" class="form-control" />
