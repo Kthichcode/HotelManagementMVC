@@ -1,7 +1,8 @@
 ﻿using BusinessObjects;
+using HotelManagementMVC.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using HotelManagementMVC.Models;
 using Services.Interfaces;
 
 namespace HotelManagementMVC.Controllers
@@ -9,11 +10,71 @@ namespace HotelManagementMVC.Controllers
     public class AccountController : Controller
     {
         private readonly IAccountService _accountService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AccountController(IAccountService accountService)
+
+        public AccountController(IAccountService accountService, UserManager<ApplicationUser> userManager)
         {
             _accountService = accountService;
+            _userManager = userManager;
         }
+
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Profile()
+        {
+            ApplicationUser? user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            ProfileViewModel model = new ProfileViewModel();
+            model.UserName = user.UserName ?? "";
+            model.Email = user.Email ?? "";
+            model.FullName = user.FullName ?? "";
+            model.PhoneNumber = user.PhoneNumber;
+
+            return View(model);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Profile(ProfileViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            ApplicationUser? user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            user.FullName = model.FullName;
+            user.PhoneNumber = model.PhoneNumber;
+
+            IdentityResult result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                foreach (IdentityError e in result.Errors)
+                {
+                    ModelState.AddModelError("", e.Description);
+                }
+                return View(model);
+            }
+
+            ViewBag.Message = "Profile updated successfully!";
+            return View(model);
+        }
+
+
+
+
 
         // GET: /Account/Login
         [HttpGet]
@@ -63,7 +124,14 @@ namespace HotelManagementMVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Username, FullName = model.FullName };
+                var user = new ApplicationUser
+                {
+                    UserName = model.Username,
+                    Email = model.Email,
+                    FullName = model.FullName,
+                    EmailConfirmed = true
+                };
+
                 var result = await _accountService.RegisterAsync(user, model.Password);
 
                 if (result.Succeeded)
@@ -100,7 +168,8 @@ namespace HotelManagementMVC.Controllers
             }
             else
             {
-                return RedirectToAction(nameof(AccountController), "Home");
+                return RedirectToAction("Index", "Home");
+
             }
         }
     }

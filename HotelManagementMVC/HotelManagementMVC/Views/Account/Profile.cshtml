@@ -1,0 +1,46 @@
+﻿@model HotelManagementMVC.Models.ProfileViewModel
+
+<h2>My Profile</h2>
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-success">@ViewBag.Message</div>
+}
+
+<div style="color:red;">
+    @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+    {
+        <div>@err.ErrorMessage</div>
+    }
+</div>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label>Username</label>
+        <input class="form-control" value="@Model.UserName" disabled />
+    </div>
+
+    <div class="mb-3">
+        <label>Email</label>
+        <input class="form-control" value="@Model.Email" disabled />
+    </div>
+
+    <div class="mb-3">
+        <label>Full Name</label>
+        <input class="form-control" asp-for="FullName" />
+        <span asp-validation-for="FullName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label>Phone</label>
+        <input class="form-control" asp-for="PhoneNumber" />
+    </div>
+
+    <button class="btn btn-primary" type="submit">Save</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
