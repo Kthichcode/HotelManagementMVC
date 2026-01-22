@@ -133,9 +133,14 @@ namespace HotelManagementMVC.Controllers
                 var booking = _bookingService.GetById(id);
                 if (booking == null) throw new Exception("Booking not found.");
                 
-                // Refund logic if Confirmed (Paid)
-                // Assuming if Confirmed means they paid full (either by Wallet or VNPay)
-                if (booking.Status == BusinessObjects.Enums.BookingStatus.Confirmed)
+                // Capture status before cancelling
+                var statusBefore = booking.Status;
+                
+                // 1. Attempt to Cancel (this validates dates etc)
+                _bookingService.CancelBooking(id, userId);
+                
+                // 2. If success, processing Refund if applicable
+                if (statusBefore == BusinessObjects.Enums.BookingStatus.Confirmed)
                 {
                     _walletService.AddBalance(userId, booking.TotalAmount);
                     TempData["SuccessMessage"] = $"Booking cancelled. Refunded {booking.TotalAmount:N0} to your wallet.";
@@ -144,8 +149,6 @@ namespace HotelManagementMVC.Controllers
                 {
                      TempData["SuccessMessage"] = "Booking cancelled.";
                 }
-
-                _bookingService.CancelBooking(id, userId);
             }
             catch(Exception ex)
             {

@@ -1,87 +1,106 @@
 ﻿@model HotelManagementMVC.Models.SearchRoomsViewModel
 
-<h2>Search Available Rooms</h2>
+@{
+    ViewData["Title"] = "Search Rooms";
+}
 
-<form asp-action="Search" method="post">
-    <div style="margin-bottom:10px;">
-        <label>Check-in</label><br />
-        <input asp-for="CheckIn" type="date" />
-        <span asp-validation-for="CheckIn" style="color:red;"></span>
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h2 class="mb-4 text-center">Search Available Rooms</h2>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <form asp-action="Search" method="post">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="CheckIn" class="form-label">Check-in Date</label>
+                            <input asp-for="CheckIn" class="form-control" type="date" />
+                            <span asp-validation-for="CheckIn" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="CheckOut" class="form-label">Check-out Date</label>
+                            <input asp-for="CheckOut" class="form-control" type="date" />
+                            <span asp-validation-for="CheckOut" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="RoomTypeId" class="form-label">Room Type (Optional)</label>
+                            <select asp-for="RoomTypeId" asp-items="Model.RoomTypes" class="form-select">
+                                <option value="">-- All Types --</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="RoomNumber" class="form-label">Room Number (Optional)</label>
+                            <input asp-for="RoomNumber" class="form-control" placeholder="e.g. 101" />
+                        </div>
+                    </div>
+
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            <ul class="mb-0 ps-3">
+                                @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                {
+                                    <li>@err.ErrorMessage</li>
+                                }
+                            </ul>
+                        </div>
+                    }
+
+                    <div class="d-grid mt-3">
+                        <button type="submit" class="btn btn-primary btn-lg">Search Available Rooms</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-
-    <div style="margin-bottom:10px;">
-        <label>Check-out</label><br />
-        <input asp-for="CheckOut" type="date" />
-        <span asp-validation-for="CheckOut" style="color:red;"></span>
-    </div>
-
-
-    <div style="margin-bottom:10px;">
-        <label>Room Type (optional)</label><br />
-        <select asp-for="RoomTypeId" asp-items="Model.RoomTypes">
-            <option value="">-- All types --</option>
-        </select>
-    </div>
-
-
-
-    <div style="margin-bottom:10px;">
-        <label>Room Number (optional)</label><br />
-        <input asp-for="RoomNumber" />
-    </div>
-
-
-   
-
-    <div style="color:red; margin-bottom:10px;">
-        @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-        {
-            <div>@err.ErrorMessage</div>
-        }
-    </div>
-
-    <button type="submit">Search</button>
-</form>
+</div>
 
 @if (Model.Results != null && Model.Results.Any())
 {
-    <hr />
-    <h3>Available Rooms</h3>
+    <hr class="my-5" />
+    <h3 class="mb-3">Available Rooms (@Model.Results.Count)</h3>
 
-    <table border="1" cellpadding="8" cellspacing="0">
-        <thead>
-            <tr>
-                <th>Room Number</th>
-                <th>Room Type</th>
-                <th>Price/Night</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var r in Model.Results)
-            {
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered">
+            <thead class="table-light">
                 <tr>
-                    <td>@r.RoomNumber</td>
-                    <td>@r.RoomTypeName</td>
-                    <td>@r.PricePerNight</td>
-                    <td>
-                        <!-- BOOK link: sang Step 6 -->
-                        <a asp-controller="Bookings"
-                           asp-action="Confirm"
-                           asp-route-roomId="@r.RoomId"
-                           asp-route-checkIn="@Model.CheckIn.ToString("yyyy-MM-dd")"
-                           asp-route-checkOut="@Model.CheckOut.ToString("yyyy-MM-dd")">
-                            Book
-                        </a>
-                    </td>
+                    <th>Room Number</th>
+                    <th>Type</th>
+                    <th>Price / Night</th>
+                    <th class="text-center">Action</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var r in Model.Results)
+                {
+                    <tr>
+                        <td class="align-middle fw-bold">@r.RoomNumber</td>
+                        <td class="align-middle">@r.RoomTypeName</td>
+                        <td class="align-middle text-success fw-bold">@r.PricePerNight.ToString("N0") VND</td>
+                        <td class="text-center">
+                            <a asp-controller="Bookings"
+                               asp-action="Confirm"
+                               asp-route-roomId="@r.RoomId"
+                               asp-route-checkIn="@Model.CheckIn.ToString("yyyy-MM-dd")"
+                               asp-route-checkOut="@Model.CheckOut.ToString("yyyy-MM-dd")"
+                               class="btn btn-success btn-sm px-4">
+                                Book Now
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
-else
+else if (Context.Request.Method == "POST")
 {
-    <p style="margin-top:15px;">No results yet. Please search.</p>
+    <div class="alert alert-warning text-center mt-4">
+        No rooms found matching your criteria. Please try different dates.
+    </div>
 }
 
 @section Scripts {
