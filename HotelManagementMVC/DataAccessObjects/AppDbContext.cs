@@ -16,6 +16,7 @@ namespace DataAccessObjects
         public DbSet<BookingRoom> BookingRooms => Set<BookingRoom>();
         public DbSet<Payment> Payments => Set<Payment>();
         public DbSet<Review> Reviews => Set<Review>();
+        public DbSet<Wallet> Wallets => Set<Wallet>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

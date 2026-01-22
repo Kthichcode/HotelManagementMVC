@@ -1,0 +1,30 @@
+@model HotelManagementMVC.Models.PaymentResultViewModel
+
+<div class="card mt-5">
+    <div class="card-header @(Model.Success ? "bg-success" : "bg-danger") text-white">
+        <h2>Payment Result</h2>
+    </div>
+    <div class="card-body text-center">
+        @if (Model.Success)
+        {
+            <h1 class="text-success mb-3"><i class="bi bi-check-circle-fill"></i> Success!</h1>
+            <p class="lead">Your payment has been processed successfully.</p>
+            <p><strong>Booking ID:</strong> @Model.OrderId</p>
+            <p><strong>Transaction ID:</strong> @Model.TransactionId</p>
+            <p><strong>Description:</strong> @Model.OrderDescription</p>
+            
+            <hr />
+            <a asp-controller="Bookings" asp-action="Index" class="btn btn-primary">View My Bookings</a>
+        }
+        else
+        {
+            <h1 class="text-danger mb-3"><i class="bi bi-x-circle-fill"></i> Failed!</h1>
+            <p class="lead">There was an error processing your payment.</p>
+            <p><strong>Error Code:</strong> @Model.VnPayResponseCode</p>
+            <p>Please try again or contact support.</p>
+            
+            <hr />
+            <a asp-controller="Rooms" asp-action="Search" class="btn btn-secondary">Try Booking Again</a>
+        }
+    </div>
+</div>

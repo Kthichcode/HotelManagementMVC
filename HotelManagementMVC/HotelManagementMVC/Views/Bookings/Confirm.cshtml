@@ -1,0 +1,31 @@
+@model HotelManagementMVC.Models.BookingConfirmViewModel
+
+<h2>Confirm Booking</h2>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Booking Details</h5>
+        <div class="alert alert-info">
+            <strong>Room:</strong> @Model.RoomNumber <br />
+            <strong>Type:</strong> @Model.RoomTypeName <br />
+            <strong>Period:</strong> @Model.CheckIn.ToShortDateString() - @Model.CheckOut.ToShortDateString() <br />
+            <strong>Nights:</strong> @Model.TotalNights <br />
+            <strong>Price/Night:</strong> @Model.PricePerNight.ToString("N2") <br />
+        </div>
+        
+        <h3 class="text-primary">Total: @Model.TotalAmount.ToString("N2")</h3>
+
+        <form asp-action="Create" method="post">
+            <input type="hidden" asp-for="RoomId" />
+            <input type="hidden" asp-for="CheckIn" />
+            <input type="hidden" asp-for="CheckOut" />
+            <input type="hidden" asp-for="PricePerNight" />
+            <!-- Note: Re-calculating total in server is safer, but passing params helps validation -->
+            
+            <div class="text-danger">@Html.ValidationSummary(true)</div>
+
+            <button type="submit" class="btn btn-success btn-lg">Confirm & Book</button>
+            <a asp-controller="Rooms" asp-action="Search" class="btn btn-secondary btn-lg">Cancel</a>
+        </form>
+    </div>
+</div>
