@@ -1,4 +1,5 @@
 using BusinessObjects.Entities;
+using BusinessObjects.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,8 @@ namespace Services.Interfaces
         Booking? GetById(int id);
         void CancelBooking(int bookingId, string userId);
         void ConfirmPayment(int bookingId);
+        
+        List<Booking> GetFilteredBookings(DateTime? date, BookingStatus? status);
+        void UpdateStatus(int bookingId, BookingStatus newStatus);
     }
 }

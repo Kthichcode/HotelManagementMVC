@@ -53,6 +53,20 @@
                                 <a class="nav-link text-dark fw-bold" asp-controller="Dashboard" asp-action="Index">Reports</a>
                             </li>
                         }
+                        
+                        @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark fw-bold" asp-controller="Users" asp-action="Index">Users</a>
+                            </li>
+                        }
+
+                        @if (User.Identity != null && User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("Staff")))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark fw-bold" asp-controller="BookingManagement" asp-action="Index">Bookings</a>
+                            </li>
+                        }
                     </ul>
 
                     <!-- RIGHT MENU (LOGIN/LOGOUT) -->

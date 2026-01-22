@@ -103,6 +103,41 @@ namespace HotelManagementMVC.Data
                     await userMgr.AddToRoleAsync(manager, "Manager");
                 }
             }
+
+            // 4) Seed staff account
+            var staffUsername = "Staff";
+            var staff = await userMgr.FindByNameAsync(staffUsername);
+
+            if (staff == null)
+            {
+                staff = new ApplicationUser
+                {
+                    UserName = staffUsername,
+                    Email = "staff@hotel.com",
+                    FullName = "Hotel Staff"
+                };
+
+                var createStaff = await userMgr.CreateAsync(staff, "Staff@123");
+                if (!createStaff.Succeeded)
+                {
+                    throw new Exception("Create staff failed: " +
+                        string.Join("; ", createStaff.Errors.Select(e => e.Description)));
+                }
+
+                var addRole = await userMgr.AddToRoleAsync(staff, "Staff");
+                if (!addRole.Succeeded)
+                {
+                    throw new Exception("Add staff role failed: " +
+                        string.Join("; ", addRole.Errors.Select(e => e.Description)));
+                }
+            }
+            else
+            {
+                if (!await userMgr.IsInRoleAsync(staff, "Staff"))
+                {
+                    await userMgr.AddToRoleAsync(staff, "Staff");
+                }
+            }
         }
     }
 }

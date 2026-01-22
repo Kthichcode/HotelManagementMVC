@@ -51,6 +51,12 @@ namespace DataAccessObjects
                 .WithOne(r => r.Booking)
                 .HasForeignKey<Review>(r => r.BookingId);
 
+            // Booking - Customer (Many-to-One)
+            modelBuilder.Entity<Booking>()
+                .HasOne(b => b.Customer)
+                .WithMany()
+                .HasForeignKey(b => b.CustomerId);
+
             // money precision
             modelBuilder.Entity<RoomType>().Property(x => x.PricePerNight).HasPrecision(18, 2);
             modelBuilder.Entity<Booking>().Property(x => x.TotalAmount).HasPrecision(18, 2);

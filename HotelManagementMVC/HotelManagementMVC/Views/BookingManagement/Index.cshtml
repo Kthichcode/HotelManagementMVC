@@ -1,0 +1,105 @@
+@using BusinessObjects.Enums
+@model List<BusinessObjects.Entities.Booking>
+
+@{
+    ViewData["Title"] = "Booking Management";
+}
+
+<div class="container mt-4">
+    <h2>Booking Management</h2>
+
+    <!-- Filter Section -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label">Check-in Date</label>
+                    <input type="date" name="date" class="form-control" value="@ViewBag.SelectedDate" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        <option value="">-- All Statuses --</option>
+                        @foreach (var s in Enum.GetValues(typeof(BookingStatus)))
+                        {
+                            <option value="@s" selected="@(ViewBag.SelectedStatus != null && (BookingStatus)ViewBag.SelectedStatus == (BookingStatus)s)">@s</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Filter</button>
+                </div>
+                <div class="col-md-2">
+                    <a asp-action="Index" class="btn btn-secondary w-100">Reset</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Booking Table -->
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover table-striped mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-4">#ID</th>
+                        <th>Customer</th>
+                        <th>Room(s)</th>
+                        <th>Check-In</th>
+                        <th>Check-Out</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th class="text-end pe-4">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var b in Model)
+                        {
+                            <tr>
+                                <td class="ps-4 fw-bold">#@b.Id</td>
+                                <td>
+                                    @if(b.Customer != null)
+                                    {
+                                        <div>@b.Customer.FullName</div>
+                                        <small class="text-muted">@b.Customer.Email</small>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Unknown</span>
+                                    }
+                                </td>
+                                <td>
+                                    @foreach(var br in b.BookingRooms)
+                                    {
+                                        <span class="badge bg-secondary">@br.Room.RoomNumber</span>
+                                    }
+                                </td>
+                                <td>@b.CheckInDate.ToString("dd/MM/yyyy")</td>
+                                <td>@b.CheckOutDate.ToString("dd/MM/yyyy")</td>
+                                <td>@b.TotalAmount.ToString("N0") VND</td>
+                                <td>
+                                    @if(b.Status == BookingStatus.Pending) { <span class="badge bg-warning text-dark">Pending</span> }
+                                    else if(b.Status == BookingStatus.Confirmed) { <span class="badge bg-primary">Confirmed</span> }
+                                    else if(b.Status == BookingStatus.CheckedIn) { <span class="badge bg-info text-dark">Checked In</span> }
+                                    else if(b.Status == BookingStatus.Completed) { <span class="badge bg-success">Completed</span> }
+                                    else { <span class="badge bg-danger">Cancelled</span> }
+                                </td>
+                                <td class="text-end pe-4">
+                                    <a asp-action="Details" asp-route-id="@b.Id" class="btn btn-sm btn-outline-primary">Details</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center py-4 text-muted">No bookings found.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
