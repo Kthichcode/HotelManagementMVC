@@ -13,6 +13,7 @@ namespace Repositories.Interfaces
         void Add(Booking booking);
         Booking? GetById(int id);
         List<Booking> GetByCustomer(string userId);
+        IQueryable<Booking> GetQuery();
         void UpdateStatus(int bookingId, BookingStatus status);
         void Save();
     }

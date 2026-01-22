@@ -1,0 +1,111 @@
+@model HotelManagementMVC.Models.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard Report";
+}
+
+<div class="container-fluid">
+    <h2 class="mb-4">Dashboard & Reports</h2>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <!-- Rooms -->
+        <div class="col-md-3">
+            <div class="card text-white bg-primary mb-3 shadow">
+                <div class="card-header">Rooms</div>
+                <div class="card-body">
+                    <h5 class="card-title">Total: @Model.TotalRooms</h5>
+                    <p class="card-text">
+                        Available: @Model.AvailableRooms <br />
+                        Maintenance: @Model.MaintenanceRooms
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bookings -->
+        <div class="col-md-3">
+            <div class="card text-white bg-success mb-3 shadow">
+                <div class="card-header">Bookings</div>
+                <div class="card-body">
+                    <h5 class="card-title">Today: @Model.BookingsToday</h5>
+                    <p class="card-text">
+                        This Month: @Model.BookingsThisMonth
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue -->
+        <div class="col-md-3">
+            <div class="card text-white bg-info mb-3 shadow">
+                <div class="card-header">Revenue (Paid)</div>
+                <div class="card-body">
+                    <h5 class="card-title">Today: @Model.RevenueToday.ToString("N0")</h5>
+                    <p class="card-text">
+                        Month: @Model.RevenueThisMonth.ToString("N0")
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="col-md-3">
+            <div class="card bg-light mb-3 shadow">
+                <div class="card-header">System</div>
+                <div class="card-body">
+                    <p class="card-text">
+                        Date: @DateTime.Now.ToString("dd/MM/yyyy")
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Top 5 Most Booked Room Types</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.TopRoomTypes != null && Model.TopRoomTypes.Any())
+                    {
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Room Type</th>
+                                    <th>Bookings</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{ int rank = 1; }
+                                @foreach (var item in Model.TopRoomTypes)
+                                {
+                                    <tr>
+                                        <td>@(rank++)</td>
+                                        <td>@item.RoomTypeName</td>
+                                        <td>@item.BookingCount</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No booking data available yet.</p>
+                    }
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <!-- Placeholder for chart or other stats -->
+            <div class="alert alert-secondary">
+                <h5 class="alert-heading">Admin Notices</h5>
+                <p>Welcome to the management dashboard. Metrics are updated in real-time.</p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -45,6 +45,14 @@ namespace Repositories
                 .ToList();
         }
 
+        public IQueryable<Booking> GetQuery()
+        {
+            return _context.Bookings
+                .Include(b => b.BookingRooms)
+                    .ThenInclude(br => br.Room)
+                        .ThenInclude(r => r.RoomType);
+        }
+
         public void UpdateStatus(int bookingId, BookingStatus status)
         {
             var booking = _context.Bookings.Find(bookingId);

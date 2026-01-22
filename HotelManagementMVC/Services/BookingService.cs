@@ -117,7 +117,11 @@ namespace Services
             if (booking.Status == BookingStatus.Completed) throw new Exception("Cannot cancel completed booking.");
             
             // Rule: Cancel before check-in
-            if (booking.CheckInDate <= DateTime.Now) throw new Exception("Cannot cancel past or ongoing bookings. You must cancel before check-in.");
+            // Rule: Cancel before check-in date
+            // Relaxed rule: Allow cancellation even on the check-in day as long as they haven't checked in (Status check handles that)
+            // Stricter rule would be: if (booking.CheckInDate < DateTime.Today)
+            
+            if (booking.CheckInDate < DateTime.Today) throw new Exception("Cannot cancel past bookings.");
 
             _bookingRepo.UpdateStatus(bookingId, BookingStatus.Cancelled);
             _bookingRepo.Save();
