@@ -68,6 +68,41 @@ namespace HotelManagementMVC.Data
                     }
                 }
             }
+
+            // 3) Seed manager account
+            var managerUsername = "Manager";
+            var manager = await userMgr.FindByNameAsync(managerUsername);
+
+            if (manager == null)
+            {
+                manager = new ApplicationUser
+                {
+                    UserName = managerUsername,
+                    Email = "manager@hotel.com",
+                    FullName = "Hotel Manager"
+                };
+
+                var createMgr = await userMgr.CreateAsync(manager, "Manager@123");
+                if (!createMgr.Succeeded)
+                {
+                    throw new Exception("Create manager failed: " +
+                        string.Join("; ", createMgr.Errors.Select(e => e.Description)));
+                }
+
+                var addRole = await userMgr.AddToRoleAsync(manager, "Manager");
+                if (!addRole.Succeeded)
+                {
+                    throw new Exception("Add manager role failed: " +
+                        string.Join("; ", addRole.Errors.Select(e => e.Description)));
+                }
+            }
+            else
+            {
+                if (!await userMgr.IsInRoleAsync(manager, "Manager"))
+                {
+                    await userMgr.AddToRoleAsync(manager, "Manager");
+                }
+            }
         }
     }
 }
