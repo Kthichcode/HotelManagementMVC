@@ -128,11 +128,21 @@ namespace Services
             _bookingRepo.UpdateStatus(bookingId, BookingStatus.Cancelled);
             _bookingRepo.Save();
         }
-        public void ConfirmPayment(int bookingId)
+        public void ConfirmPayment(int bookingId, string transactionId)
         {
             var booking = _bookingRepo.GetById(bookingId);
             if(booking != null)
             {
+                // Prevent resurrecting Cancelled bookings
+                if (booking.Status == BookingStatus.Cancelled)
+                {
+                     throw new InvalidOperationException("Cannot confirm payment for a Cancelled booking. Please contact support for refund.");
+                }
+
+                // If already confirmed/paid, we might still want to record the transaction if it's new?
+                // But generally ConfirmPayment implies moving state.
+                // For now, let's proceed.
+
                 // Update booking status
                 _bookingRepo.UpdateStatus(bookingId, BookingStatus.Confirmed);
                 
@@ -141,8 +151,9 @@ namespace Services
                 {
                     BookingId = bookingId,
                     Amount = booking.TotalAmount,
-                    Method = "VNPay", // Defaulting to VNPay as this is called for callbacks
+                    Method = "VNPay",
                     Status = PaymentStatus.Paid,
+                    ProviderTransactionId = transactionId, // Store the ID
                     CreatedAt = DateTime.UtcNow,
                     PaidAt = DateTime.UtcNow
                 };
@@ -152,6 +163,21 @@ namespace Services
                 
                  _bookingRepo.Save();
             }
+        }
+        public void RecordPayment(int bookingId, decimal amount, string method, string transactionId)
+        {
+             var payment = new Payment
+             {
+                 BookingId = bookingId,
+                 Amount = amount,
+                 Method = method,
+                 Status = PaymentStatus.Paid,
+                 ProviderTransactionId = transactionId,
+                 CreatedAt = DateTime.UtcNow,
+                 PaidAt = DateTime.UtcNow
+             };
+             _paymentRepo.Add(payment);
+             _paymentRepo.Save();
         }
         public List<Booking> GetFilteredBookings(DateTime? date, BookingStatus? status)
         {

@@ -63,6 +63,18 @@ namespace HotelManagementMVC.Controllers
         {
             if (ModelState.IsValid)
             {
+                 // Check for duplicates
+                if (await _userManager.FindByNameAsync(model.Username) != null)
+                {
+                    ModelState.AddModelError("Username", "Username is already taken.");
+                    return View(model);
+                }
+                if (await _userManager.FindByEmailAsync(model.Email) != null)
+                {
+                    ModelState.AddModelError("Email", "Email is already taken.");
+                    return View(model);
+                }
+
                 var user = new ApplicationUser
                 {
                     UserName = model.Username,
@@ -116,6 +128,14 @@ namespace HotelManagementMVC.Controllers
             {
                 var user = await _userManager.FindByIdAsync(model.Id);
                 if (user == null) return NotFound();
+
+                // Check for duplicate Email
+                var existingUserByEmail = await _userManager.FindByEmailAsync(model.Email);
+                if (existingUserByEmail != null && existingUserByEmail.Id != user.Id)
+                {
+                     ModelState.AddModelError("Email", "Email is already taken by another user.");
+                     return View(model);
+                }
 
                 user.Email = model.Email;
                 user.FullName = model.FullName;

@@ -14,7 +14,10 @@ namespace Services.Interfaces
         List<Booking> GetMyBookings(string userId);
         Booking? GetById(int id);
         void CancelBooking(int bookingId, string userId);
-        void ConfirmPayment(int bookingId);
+        
+        // Updated to accept transaction ID for idempotency
+        void ConfirmPayment(int bookingId, string transactionId);
+        void RecordPayment(int bookingId, decimal amount, string method, string transactionId);
         
         List<Booking> GetFilteredBookings(DateTime? date, BookingStatus? status);
         void UpdateStatus(int bookingId, BookingStatus newStatus);

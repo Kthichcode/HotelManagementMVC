@@ -41,6 +41,8 @@ namespace Services
 
         public decimal DeductBalance(string userId, decimal amountNeeded)
         {
+            if (amountNeeded < 0) throw new ArgumentException("Amount cannot be negative");
+
             var wallet = GetUserWallet(userId);
             
             decimal deducted = 0;
@@ -63,6 +65,8 @@ namespace Services
 
         public void AddBalance(string userId, decimal amount)
         {
+            if (amount < 0) throw new ArgumentException("Amount cannot be negative");
+            
             var wallet = GetUserWallet(userId);
             wallet.Balance += amount;
             _walletRepo.Update(wallet);

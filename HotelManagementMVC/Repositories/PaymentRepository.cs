@@ -25,6 +25,11 @@ namespace Repositories
             return _context.Payments.Where(p => p.BookingId == bookingId).ToList();
         }
 
+        public Payment? GetByTransactionId(string transactionId)
+        {
+            return _context.Payments.FirstOrDefault(p => p.ProviderTransactionId == transactionId && p.ProviderTransactionId != null);
+        }
+
         public void Save()
         {
             _context.SaveChanges();

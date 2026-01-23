@@ -7,6 +7,7 @@ namespace Repositories.Interfaces
     {
         void Add(Payment payment);
         List<Payment> GetByBookingId(int bookingId);
+        Payment? GetByTransactionId(string transactionId);
         void Save();
     }
 }
