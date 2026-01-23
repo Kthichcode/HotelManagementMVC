@@ -150,10 +150,23 @@ namespace HotelManagementMVC.Controllers
                 var user = new ApplicationUser
                 {
                     UserName = model.Username,
-                    Email = model.Email,
-                    FullName = model.FullName,
                     EmailConfirmed = true
                 };
+
+                // Check if email or username already exists
+                var existingUser = await _userManager.FindByEmailAsync(model.Email);
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError("Email", "Email is already taken.");
+                    return View(model);
+                }
+
+                var existingName = await _userManager.FindByNameAsync(model.Username);
+                if (existingName != null)
+                {
+                    ModelState.AddModelError("Username", "Username is already taken.");
+                    return View(model);
+                }
 
                 var result = await _accountService.RegisterAsync(user, model.Password);
 

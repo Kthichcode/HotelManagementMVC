@@ -1,21 +1,203 @@
 ﻿@{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = "Welcome";
 }
 
-<h2>@ViewData["Title"]</h2>
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
+        color: white;
+        padding: 80px 0;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        text-align: center;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+    .hero-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        margin-bottom: 30px;
+    }
+    .feature-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 150px;
+    }
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    .staff-hero {
+        background: linear-gradient(135deg, #6610f2 0%, #6f42c1 100%);
+    }
+    .admin-hero {
+         background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+    }
+</style>
 
-<!-- Hiển thị thông báo nếu có -->
-@if (ViewBag.SuccessMessage != null)
+@if (TempData["SuccessMessage"] != null)
 {
-    <div class="alert alert-success">
-        @ViewBag.SuccessMessage
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
 
-<p>Welcome to the Hotel Management System!</p>
+@if (!User.Identity.IsAuthenticated)
+{
+    <!-- GUEST VIEW -->
+    <div class="hero-section">
+        <div class="container">
+            <h1 class="hero-title">Experience Luxury</h1>
+            <p class="hero-subtitle">Book your perfect stay at Hotel Management System today.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="@Url.Action("Search", "Rooms")" class="btn btn-light btn-lg fw-bold px-5">Book Now</a>
+                <a href="@Url.Action("Login", "Account")" class="btn btn-outline-light btn-lg fw-bold px-4">Login</a>
+            </div>
+        </div>
+    </div>
 
-<!-- Các nút Login và Register -->
-<div>
-    <a href="@Url.Action("Login", "Account")" class="btn btn-primary">Login</a>
-    <a href="@Url.Action("Register", "Account")" class="btn btn-secondary">Register</a>
-</div>
+    <div class="container mb-5">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card feature-card text-center p-4">
+                    <div class="card-body">
+                        <h4 class="card-title">Premium Rooms</h4>
+                        <p class="card-text text-muted">Spacious suites with city views.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card feature-card text-center p-4">
+                    <div class="card-body">
+                        <h4 class="card-title">Easy Payment</h4>
+                        <p class="card-text text-muted">Secure payments via VNPay or Wallet.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card feature-card text-center p-4">
+                    <div class="card-body">
+                        <h4 class="card-title">5-Star Service</h4>
+                        <p class="card-text text-muted">24/7 dedicated support team.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else if (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("Staff"))
+{
+    <!-- MANAGEMENT VIEW (Staff/Admin/Manager) -->
+    <div class="hero-section @(User.IsInRole("Admin") ? "admin-hero" : "staff-hero")">
+        <div class="container">
+            <h1 class="hero-title">Management Portal</h1>
+            <p class="hero-subtitle">
+                Role: 
+                @if(User.IsInRole("Admin")) { <span>Administrator</span> }
+                else if(User.IsInRole("Manager")) { <span>Manager</span> }
+                else { <span>Staff</span> }
+            </p>
+            <div class="d-flex justify-content-center gap-3">
+                 <a href="@Url.Action("Index", "BookingManagement")" class="btn btn-light btn-lg fw-bold px-5">All Bookings</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mb-5">
+        <h3 class="mb-4 text-center">Operational Tools</h3>
+        <div class="row g-4 justify-content-center">
+            
+            <div class="col-md-4">
+                <a href="@Url.Action("Index", "BookingManagement")" class="text-decoration-none">
+                    <div class="card feature-card text-center p-4 border-primary">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary fw-bold">Manage Bookings</h5>
+                            <p class="text-muted small">Check-in, Check-out, View Lists</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="col-md-4">
+                    <a href="@Url.Action("Index", "Users")" class="text-decoration-none">
+                        <div class="card feature-card text-center p-4 border-danger">
+                            <div class="card-body">
+                                <h5 class="card-title text-danger fw-bold">User Management</h5>
+                                <p class="text-muted small">Create Staff, Lock Accounts</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+            
+            @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+            {
+                <div class="col-md-4">
+                    <a href="@Url.Action("Index", "Dashboard")" class="text-decoration-none">
+                        <div class="card feature-card text-center p-4 border-success">
+                            <div class="card-body">
+                                <h5 class="card-title text-success fw-bold">Reports</h5>
+                                <p class="text-muted small">View Statistics</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+
+        </div>
+    </div>
+}
+else
+{
+    <!-- CUSTOMER VIEW -->
+    <div class="hero-section" style="background: linear-gradient(135deg, #20c997 0%, #198754 100%);">
+        <div class="container">
+            <h1 class="hero-title">Welcome Back, @User.Identity.Name!</h1>
+            <p class="hero-subtitle">Ready for your next vacation?</p>
+            <div class="d-flex justify-content-center gap-3">
+                 <a href="@Url.Action("Search", "Rooms")" class="btn btn-light btn-lg fw-bold px-5">Book a Room</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mb-5">
+        <h3 class="mb-4 text-center">My Account</h3>
+        <div class="row g-4 justify-content-center">
+            
+            <div class="col-md-4">
+                <a href="@Url.Action("Index", "Bookings")" class="text-decoration-none">
+                    <div class="card feature-card text-center p-4">
+                        <div class="card-body">
+                            <h5 class="card-title text-dark">My Bookings</h5>
+                            <p class="text-muted small">History & Status</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+             <div class="col-md-4">
+                <a href="@Url.Action("Index", "Wallets")" class="text-decoration-none">
+                    <div class="card feature-card text-center p-4">
+                        <div class="card-body">
+                            <h5 class="card-title text-dark">My Wallet</h5>
+                            <p class="text-muted small">Top-up & Balance</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+    </div>
+}
