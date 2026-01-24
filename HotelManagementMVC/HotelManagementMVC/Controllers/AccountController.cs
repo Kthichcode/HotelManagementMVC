@@ -150,6 +150,9 @@ namespace HotelManagementMVC.Controllers
                 var user = new ApplicationUser
                 {
                     UserName = model.Username,
+                    FullName = model.FullName,
+                    Email = model.Email,
+                    PhoneNumber = model.PhoneNumber,
                     EmailConfirmed = true
                 };
 
