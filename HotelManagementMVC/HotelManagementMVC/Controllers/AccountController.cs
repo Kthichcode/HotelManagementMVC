@@ -152,6 +152,7 @@ namespace HotelManagementMVC.Controllers
                     UserName = model.Username,
                     FullName = model.FullName,
                     Email = model.Email,
+                    PhoneNumber = model.PhoneNumber,
                     EmailConfirmed = true
                 };
 
