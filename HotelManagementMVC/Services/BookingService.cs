@@ -14,11 +14,13 @@ namespace Services
     {
         private readonly IBookingRepository _bookingRepo;
         private readonly IRoomRepository _roomRepo;
+        private readonly IPaymentRepository _paymentRepo;
 
-        public BookingService(IBookingRepository bookingRepo, IRoomRepository roomRepo)
+        public BookingService(IBookingRepository bookingRepo, IRoomRepository roomRepo, IPaymentRepository paymentRepo)
         {
             _bookingRepo = bookingRepo;
             _roomRepo = roomRepo;
+            _paymentRepo = paymentRepo;
         }
 
         public int CreateBooking(string userId, int roomId, DateTime checkIn, DateTime checkOut)
@@ -126,22 +128,110 @@ namespace Services
             _bookingRepo.UpdateStatus(bookingId, BookingStatus.Cancelled);
             _bookingRepo.Save();
         }
-        public void ConfirmPayment(int bookingId)
+        public void ConfirmPayment(int bookingId, string transactionId)
         {
             var booking = _bookingRepo.GetById(bookingId);
             if(booking != null)
             {
+                // Prevent resurrecting Cancelled bookings
+                if (booking.Status == BookingStatus.Cancelled)
+                {
+                     throw new InvalidOperationException("Cannot confirm payment for a Cancelled booking. Please contact support for refund.");
+                }
+
+                // If already confirmed/paid, we might still want to record the transaction if it's new?
+                // But generally ConfirmPayment implies moving state.
+                // For now, let's proceed.
+
                 // Update booking status
                 _bookingRepo.UpdateStatus(bookingId, BookingStatus.Confirmed);
                 
-                // Add Payment record if needed (Assuming we update the existing one or create new)
-                // Since we don't have PaymentRepo injected, we can just save Changes via BookingRepo
-                
-                // For better design, we should use PaymentRepository to add a Payment record 'Paid'
-                // But simplifying for now as per user request flow
+                // Create Payment Record
+                var payment = new Payment
+                {
+                    BookingId = bookingId,
+                    Amount = booking.TotalAmount,
+                    Method = "VNPay",
+                    Status = PaymentStatus.Paid,
+                    ProviderTransactionId = transactionId, // Store the ID
+                    CreatedAt = DateTime.UtcNow,
+                    PaidAt = DateTime.UtcNow
+                };
+
+                _paymentRepo.Add(payment);
+                _paymentRepo.Save();
                 
                  _bookingRepo.Save();
             }
+        }
+        public void RecordPayment(int bookingId, decimal amount, string method, string transactionId)
+        {
+             var payment = new Payment
+             {
+                 BookingId = bookingId,
+                 Amount = amount,
+                 Method = method,
+                 Status = PaymentStatus.Paid,
+                 ProviderTransactionId = transactionId,
+                 CreatedAt = DateTime.UtcNow,
+                 PaidAt = DateTime.UtcNow
+             };
+             _paymentRepo.Add(payment);
+             _paymentRepo.Save();
+        }
+        public List<Booking> GetFilteredBookings(DateTime? date, BookingStatus? status)
+        {
+            var query = _bookingRepo.GetQuery();
+
+            if (date.HasValue)
+            {
+                // Filter by CheckInDate matching the date
+                query = query.Where(b => b.CheckInDate.Date == date.Value.Date);
+            }
+
+            if (status.HasValue)
+            {
+                query = query.Where(b => b.Status == status.Value);
+            }
+
+            return query.OrderByDescending(b => b.CreatedAt).ToList();
+        }
+
+        public void UpdateStatus(int bookingId, BookingStatus newStatus)
+        {
+            var booking = _bookingRepo.GetById(bookingId);
+            if (booking == null) throw new Exception("Booking not found.");
+
+            // Validation Logic for Status Transitions
+            // Flow: Pending -> Confirmed -> CheckedIn -> Completed
+            //               -> Cancelled (Anytime before CheckIn)
+
+            if (booking.Status == BookingStatus.Cancelled || booking.Status == BookingStatus.Completed)
+            {
+                throw new Exception($"Cannot change status of a {booking.Status} booking.");
+            }
+
+            if (newStatus == BookingStatus.Confirmed)
+            {
+                if (booking.Status != BookingStatus.Pending) throw new Exception("Only Pending bookings can be Confirmed.");
+            }
+            else if (newStatus == BookingStatus.CheckedIn)
+            {
+                if (booking.Status != BookingStatus.Confirmed) throw new Exception("Only Confirmed bookings can be Checked In.");
+            }
+            else if (newStatus == BookingStatus.Completed)
+            {
+                if (booking.Status != BookingStatus.CheckedIn) throw new Exception("Only Checked In bookings can be Completed.");
+            }
+            else if (newStatus == BookingStatus.Cancelled)
+            {
+                // Can cancel Pending or Confirmed
+                if (booking.Status == BookingStatus.CheckedIn || booking.Status == BookingStatus.Completed)
+                    throw new Exception("Cannot cancel after checking in.");
+            }
+
+            _bookingRepo.UpdateStatus(bookingId, newStatus);
+            _bookingRepo.Save();
         }
     }
 }

@@ -1,5 +1,6 @@
 using BusinessObjects;
 using BusinessObjects.Entities;
+using Repositories.Interfaces;
 using HotelManagementMVC.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -19,14 +20,16 @@ namespace HotelManagementMVC.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IVnPayService _vnPayService;
         private readonly IWalletService _walletService;
+        private readonly IPaymentRepository _paymentRepo;
 
-        public BookingsController(IBookingService bookingService, IRoomService roomService, UserManager<ApplicationUser> userManager, IVnPayService vnPayService, IWalletService walletService)
+        public BookingsController(IBookingService bookingService, IRoomService roomService, UserManager<ApplicationUser> userManager, IVnPayService vnPayService, IWalletService walletService, IPaymentRepository paymentRepo)
         {
             _bookingService = bookingService;
             _roomService = roomService;
             _userManager = userManager;
             _vnPayService = vnPayService;
             _walletService = walletService;
+            _paymentRepo = paymentRepo;
         }
 
         // GET: /Bookings/Index (My Bookings)
@@ -94,10 +97,16 @@ namespace HotelManagementMVC.Controllers
                 decimal deducted = _walletService.DeductBalance(userId, totalAmount);
                 decimal remaining = totalAmount - deducted;
 
+                // Record the Wallet deduction IMMEDIATELY, regardless of whether full payment is complete
+                if (deducted > 0)
+                {
+                    _bookingService.RecordPayment(bookingId, deducted, "Wallet", $"WALLET-PART-{DateTime.UtcNow.Ticks}");
+                }
+
                 // Update booking status if fully paid by wallet
                 if (remaining <= 0)
                 {
-                    _bookingService.ConfirmPayment(bookingId);
+                    _bookingService.ConfirmPayment(bookingId, $"WALLET-{DateTime.UtcNow.Ticks}");
                     TempData["SuccessMessage"] = $"Booking successful! Paid full {deducted:N0} via Wallet.";
                     return RedirectToAction("Index");
                 }
@@ -139,11 +148,15 @@ namespace HotelManagementMVC.Controllers
                 // 1. Attempt to Cancel (this validates dates etc)
                 _bookingService.CancelBooking(id, userId);
                 
-                // 2. If success, processing Refund if applicable
-                if (statusBefore == BusinessObjects.Enums.BookingStatus.Confirmed)
+                // 2. Refund Logic: Check ALL accumulated VALID payments for this booking
+                // Regardless of whether it was Confirmed or Pending (Partial Payment Case)
+                var payments = _paymentRepo.GetByBookingId(id);
+                decimal totalPaid = payments.Where(p => p.Status == BusinessObjects.Enums.PaymentStatus.Paid).Sum(p => p.Amount);
+
+                if (totalPaid > 0)
                 {
-                    _walletService.AddBalance(userId, booking.TotalAmount);
-                    TempData["SuccessMessage"] = $"Booking cancelled. Refunded {booking.TotalAmount:N0} to your wallet.";
+                    _walletService.AddBalance(userId, totalPaid);
+                    TempData["SuccessMessage"] = $"Booking cancelled. Refunded {totalPaid:N0} to your wallet.";
                 }
                 else
                 {
@@ -163,30 +176,36 @@ namespace HotelManagementMVC.Controllers
 
             if (response.Success)
             {
-                 // Update booking status here
-                 int bookingId = int.Parse(response.OrderId);
-                 _bookingService.ConfirmPayment(bookingId);
-                 
-                 TempData["SuccessMessage"] = $"Payment successful for Booking #{bookingId}";
+                // 1. Idempotency Check: Check if this specific transaction has already been processed
+                var existingPayment = _paymentRepo.GetByTransactionId(response.TransactionId);
+                if (existingPayment != null)
+                {
+                     TempData["SuccessMessage"] = $"Payment via VNPay already processed. (Txn: {response.TransactionId})";
+                     return RedirectToAction("Index");
+                }
+
+                int bookingId = int.Parse(response.OrderId);
+                
+                try 
+                {
+                    // 2. Process Payment (will throw if booking is Cancelled)
+                    _bookingService.ConfirmPayment(bookingId, response.TransactionId);
+                    TempData["SuccessMessage"] = $"Payment successful for Booking #{bookingId}";
+                }
+                catch (Exception ex)
+                {
+                    // 3. Handle Cancelled Bookings or other errors
+                    TempData["Error"] = $"Payment processed but error updating booking: {ex.Message}";
+                    // Note: Money was deducted (Payment Success) but Booking update failed.
+                    // Ideally check ex.Message.
+                }
             }
             else
             {
                 TempData["Error"] = $"Payment failed. Code: {response.VnPayResponseCode}";
             }
 
-            // Map DTO to ViewModel (Strict Layered Architecture)
-            var viewModel = new PaymentResultViewModel
-            {
-                Success = response.Success,
-                PaymentMethod = response.PaymentMethod,
-                OrderDescription = response.OrderDescription,
-                OrderId = response.OrderId,
-                TransactionId = response.TransactionId,
-                Token = response.Token,
-                VnPayResponseCode = response.VnPayResponseCode
-            };
-
-            return View(viewModel);
+            return RedirectToAction("Index");
         }
     }
 }

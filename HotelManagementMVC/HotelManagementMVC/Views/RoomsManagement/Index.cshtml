@@ -1,29 +1,64 @@
 ﻿@model List<BusinessObjects.Entities.Room>
 
-<h2>Rooms Management</h2>
-<a asp-action="Create">Create New Room</a>
+@{
+    ViewData["Title"] = "Rooms Management";
+}
 
-<table border="1" cellpadding="8">
-    <tr>
-        <th>Room Number</th>
-        <th>Type</th>
-        <th>Status</th>
-        <th>Actions</th>
-    </tr>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Rooms Management</h2>
+        <a asp-action="Create" class="btn btn-primary">
+            + Create New Room
+        </a>
+    </div>
 
-    @foreach (var r in Model)
-    {
-        <tr>
-            <td>@r.RoomNumber</td>
-            <td>@(r.RoomType != null ? r.RoomType.Name : "")</td>
-            <td>@r.Status</td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@r.Id">Edit</a>
-                <form asp-action="Delete" method="post" style="display:inline;">
-                    <input type="hidden" name="id" value="@r.Id" />
-                    <button type="submit">Delete</button>
-                </form>
-            </td>
-        </tr>
-    }
-</table>
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover table-striped mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-4">Room Number</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th class="text-end pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in Model)
+                    {
+                        <tr>
+                            <td class="ps-4 fw-bold">@r.RoomNumber</td>
+                            <td>
+                                @if (r.RoomType != null)
+                                {
+                                    <span class="badge bg-info text-dark">@r.RoomType.Name</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">N/A</span>
+                                }
+                            </td>
+                            <td>
+                                @if (r.Status == BusinessObjects.Enums.RoomStatus.Available)
+                                {
+                                    <span class="badge bg-success">Available</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">@r.Status</span>
+                                }
+                            </td>
+                            <td class="text-end pe-4">
+                                <a asp-action="Edit" asp-route-id="@r.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                                <form asp-action="Delete" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this room?');">
+                                    <input type="hidden" name="id" value="@r.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

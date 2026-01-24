@@ -33,6 +33,12 @@ namespace HotelManagementMVC.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
+            if (_service.GetAll().Any(t => t.Name.Equals(model.Name, StringComparison.OrdinalIgnoreCase)))
+            {
+                ModelState.AddModelError("Name", "Room Type Name already exists.");
+                return View(model);
+            }
+
             var entity = new RoomType
             {
                 Name = model.Name,
@@ -68,6 +74,12 @@ namespace HotelManagementMVC.Controllers
 
             var type = _service.GetById(model.Id);
             if (type == null) return NotFound();
+
+            if (_service.GetAll().Any(t => t.Name.Equals(model.Name, StringComparison.OrdinalIgnoreCase) && t.Id != model.Id))
+            {
+                ModelState.AddModelError("Name", "Room Type Name already exists.");
+                return View(model);
+            }
 
             type.Name = model.Name;
             type.Description = model.Description;

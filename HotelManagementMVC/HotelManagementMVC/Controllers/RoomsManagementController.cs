@@ -67,6 +67,12 @@ namespace HotelManagementMVC.Controllers
 
             try
             {
+                if (_roomService.GetAll().Any(r => r.RoomNumber.Equals(model.RoomNumber, StringComparison.OrdinalIgnoreCase)))
+                {
+                    ModelState.AddModelError("RoomNumber", "Room Number already exists.");
+                    return View(model); // Dropdowns are reloaded at start of method
+                }
+
                 var room = new Room();
                 room.RoomNumber = model.RoomNumber;
                 room.RoomTypeId = model.RoomTypeId;
@@ -112,6 +118,12 @@ namespace HotelManagementMVC.Controllers
             {
                 var room = _roomService.GetById(model.Id);
                 if (room == null) return NotFound();
+
+                if (_roomService.GetAll().Any(r => r.RoomNumber.Equals(model.RoomNumber, StringComparison.OrdinalIgnoreCase) && r.Id != room.Id))
+                {
+                    ModelState.AddModelError("RoomNumber", "Room Number already exists.");
+                    return View(model);
+                }
 
                 room.RoomNumber = model.RoomNumber;
                 room.RoomTypeId = model.RoomTypeId;

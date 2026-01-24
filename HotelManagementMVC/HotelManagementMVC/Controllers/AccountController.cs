@@ -88,7 +88,8 @@ namespace HotelManagementMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/");
+            // IMPORTANT: Do NOT default returnUrl here to avoid overwriting valid nulls which indicate we should decide
+            // returnUrl ??= Url.Content("~/"); 
 
             if (ModelState.IsValid)
             {
@@ -96,10 +97,32 @@ namespace HotelManagementMVC.Controllers
 
                 if (result.Succeeded)
                 {
-                    // Lưu thông báo thành công vào TempData
                     TempData["SuccessMessage"] = "Login successful!";
 
-                    return RedirectToLocal(returnUrl);  // Quay lại trang gốc (trang Home nếu không có returnUrl)
+                    // 1. If ReturnUrl is present and local, use it (user was redirected from a protected page)
+                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl) && returnUrl != "/")
+                    {
+                         return Redirect(returnUrl);
+                    }
+
+                    // 2. Otherwise, Redirect based on Role
+                    var user = await _userManager.FindByNameAsync(model.Username);
+                    if (user != null)
+                    {
+                        var roles = await _userManager.GetRolesAsync(user);
+
+                        if (roles.Contains("Admin") || roles.Contains("Manager"))
+                        {
+                            return RedirectToAction("Index", "Dashboard");
+                        }
+                        if (roles.Contains("Customer"))
+                        {
+                            return RedirectToAction("Search", "Rooms"); // Redirect Customers to Search Page
+                        }
+                    }
+
+                    // 3. Fallback to Home
+                    return RedirectToAction("Index", "Home");
                 }
                 else
                 {
@@ -127,10 +150,23 @@ namespace HotelManagementMVC.Controllers
                 var user = new ApplicationUser
                 {
                     UserName = model.Username,
-                    Email = model.Email,
-                    FullName = model.FullName,
                     EmailConfirmed = true
                 };
+
+                // Check if email or username already exists
+                var existingUser = await _userManager.FindByEmailAsync(model.Email);
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError("Email", "Email is already taken.");
+                    return View(model);
+                }
+
+                var existingName = await _userManager.FindByNameAsync(model.Username);
+                if (existingName != null)
+                {
+                    ModelState.AddModelError("Username", "Username is already taken.");
+                    return View(model);
+                }
 
                 var result = await _accountService.RegisterAsync(user, model.Password);
 
