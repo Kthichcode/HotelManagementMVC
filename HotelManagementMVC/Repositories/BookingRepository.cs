@@ -50,7 +50,8 @@ namespace Repositories
             return _context.Bookings
                 .Include(b => b.BookingRooms)
                     .ThenInclude(br => br.Room)
-                        .ThenInclude(r => r.RoomType);
+                        .ThenInclude(r => r.RoomType)
+                .Include(b => b.Customer);
         }
 
         public void UpdateStatus(int bookingId, BookingStatus status)
