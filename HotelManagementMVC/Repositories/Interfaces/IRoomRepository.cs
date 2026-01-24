@@ -19,6 +19,8 @@ namespace Repositories.Interfaces
         void Save();
         bool ExistsRoomNumber(string roomNumber);
         bool ExistsRoomNumberExceptId(string roomNumber, int roomId);
+        Room? GetByIdWithImages(int id);
+
 
     }
 }

@@ -18,6 +18,9 @@ namespace DataAccessObjects
         public DbSet<Review> Reviews => Set<Review>();
         public DbSet<Wallet> Wallets => Set<Wallet>();
 
+        public DbSet<RoomImage> RoomImages => Set<RoomImage>();
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -56,6 +59,13 @@ namespace DataAccessObjects
                 .HasOne(b => b.Customer)
                 .WithMany()
                 .HasForeignKey(b => b.CustomerId);
+
+            modelBuilder.Entity<RoomImage>()
+                .HasOne(x => x.Room)
+                .WithMany(r => r.RoomImages)
+                .HasForeignKey(x => x.RoomId)
+                .OnDelete(DeleteBehavior.Cascade);
+
 
             // money precision
             modelBuilder.Entity<RoomType>().Property(x => x.PricePerNight).HasPrecision(18, 2);

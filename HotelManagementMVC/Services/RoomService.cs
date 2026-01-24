@@ -13,10 +13,12 @@ namespace Services
     public class RoomService : IRoomService
     {
         private readonly IRoomRepository _roomRepo;
+        private readonly IRoomImageRepository _roomImageRepo;
 
-        public RoomService(IRoomRepository roomRepo)
+        public RoomService(IRoomRepository roomRepo, IRoomImageRepository roomImageRepo)
         {
             _roomRepo = roomRepo;
+            _roomImageRepo = roomImageRepo;
         }
 
         public List<Room> GetAvailableRooms(DateTime checkIn, DateTime checkOut, int? roomTypeId)
@@ -129,6 +131,74 @@ namespace Services
 
             _roomRepo.Delete(existing);
             _roomRepo.Save();
+        }
+
+        public List<string> GetRoomImageUrls(int roomId)
+        {
+            List<string> urls = new List<string>();
+            List<RoomImage> images = _roomImageRepo.GetByRoomId(roomId);
+
+            for (int i = 0; i < images.Count; i++)
+            {
+                urls.Add(images[i].ImageUrl);
+            }
+
+            return urls;
+        }
+
+        public void AddRoomImages(int roomId, List<string> imageUrls)
+        {
+            List<RoomImage> images = new List<RoomImage>();
+
+            for (int i = 0; i < imageUrls.Count; i++)
+            {
+                RoomImage img = new RoomImage();
+                img.RoomId = roomId;
+                img.ImageUrl = imageUrls[i];
+                images.Add(img);
+            }
+
+            _roomImageRepo.AddRange(images);
+            _roomImageRepo.Save();
+        }
+
+        public void ReplaceRoomImages(int roomId, List<string> imageUrls)
+        {
+            List<RoomImage> oldImages = _roomImageRepo.GetByRoomId(roomId);
+            if (oldImages.Count > 0)
+            {
+                _roomImageRepo.DeleteRange(oldImages);
+            }
+
+            List<RoomImage> newImages = new List<RoomImage>();
+            for (int i = 0; i < imageUrls.Count; i++)
+            {
+                RoomImage img = new RoomImage();
+                img.RoomId = roomId;
+                img.ImageUrl = imageUrls[i];
+                newImages.Add(img);
+            }
+
+            _roomImageRepo.AddRange(newImages);
+            _roomImageRepo.Save();
+        }
+      
+
+        public Room? GetByIdWithImages(int id)
+        {
+            return _roomRepo.GetByIdWithImages(id);
+        }
+
+        public bool IsRoomNumberExists(string roomNumber)
+        {
+            if (roomNumber == null) return false;
+            return _roomRepo.ExistsRoomNumber(roomNumber.Trim());
+        }
+
+        public bool IsRoomNumberExistsExceptId(string roomNumber, int roomId)
+        {
+            if (roomNumber == null) return false;
+            return _roomRepo.ExistsRoomNumberExceptId(roomNumber.Trim(), roomId);
         }
     }
 }

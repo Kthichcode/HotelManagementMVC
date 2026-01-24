@@ -31,5 +31,8 @@ namespace HotelManagementMVC.Models
         public string RoomNumber { get; set; } = "";
         public string RoomTypeName { get; set; } = "";
         public decimal PricePerNight { get; set; }
+
+        public string ImageUrl { get; set; } = "";
+        public int MaxOccupancy { get; set; }
     }
 }
