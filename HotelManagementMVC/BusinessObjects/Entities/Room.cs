@@ -19,6 +19,14 @@ namespace BusinessObjects.Entities
         public int RoomTypeId { get; set; }
         public RoomType? RoomType { get; set; }
 
+        [MaxLength(255)]
+        public string ImageUrl { get; set; } = ""; // thumbnail
+
+        public int MaxOccupancy { get; set; }
+        public string? Description { get; set; }
+
+        public ICollection<RoomImage> RoomImages { get; set; } = new List<RoomImage>();
+
         public ICollection<BookingRoom> BookingRooms { get; set; } = new List<BookingRoom>();
     }
 }

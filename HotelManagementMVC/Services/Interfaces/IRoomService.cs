@@ -16,5 +16,15 @@ namespace Services.Interfaces
         void Create(Room room);
         void Update(Room room);
         void Delete(int id);
+
+        List<string> GetRoomImageUrls(int roomId);
+        void AddRoomImages(int roomId, List<string> imageUrls);
+        void ReplaceRoomImages(int roomId, List<string> imageUrls);
+        Room? GetByIdWithImages(int id);
+
+        bool IsRoomNumberExists(string roomNumber);
+        bool IsRoomNumberExistsExceptId(string roomNumber, int roomId);
+
+
     }
 }

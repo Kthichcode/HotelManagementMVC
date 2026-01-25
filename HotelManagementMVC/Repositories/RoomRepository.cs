@@ -87,5 +87,12 @@ namespace Repositories
             return room != null;
         }
 
+        public Room? GetByIdWithImages(int id)
+        {
+            return _context.Rooms
+                .Include(r => r.RoomType)
+                .Include(r => r.RoomImages)
+                .FirstOrDefault(r => r.Id == id);
+        }
     }
 }

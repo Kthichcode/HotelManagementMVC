@@ -9,7 +9,7 @@
     }
 </div>
 
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     @if (Model.Id != 0)
     {
         <input type="hidden" asp-for="Id" />
@@ -32,6 +32,40 @@
         <select asp-for="Status" asp-items="Model.StatusOptions"></select>
     </div>
 
+    <div>
+        <label>Max Occupancy</label><br />
+        <input asp-for="MaxOccupancy" type="number" min="1" max="50" />
+        <span asp-validation-for="MaxOccupancy" style="color:red;"></span>
+    </div>
+
+    <div>
+        <label>Description</label><br />
+        <textarea asp-for="Description" rows="3"></textarea>
+    </div>
+
+    <div>
+        <label>Room Images (multiple)</label><br />
+        <input asp-for="Images" type="file" multiple />
+    </div>
+
+    @* Show existing images when editing *@
+    @if (Model.Id != 0 && Model.ExistingImageUrls != null && Model.ExistingImageUrls.Count > 0)
+    {
+        <hr />
+        <h4>Existing Images</h4>
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            @for (int i = 0; i < Model.ExistingImageUrls.Count; i++)
+            {
+                <img src="@Model.ExistingImageUrls[i]"
+                     style="width:180px;height:120px;object-fit:cover;border:1px solid #ddd;border-radius:8px;" />
+            }
+        </div>
+        <p style="color:#666; margin-top:8px;">
+            Uploading new images will replace the old ones.
+        </p>
+    }
+
+    <br />
     <button type="submit">Save</button>
 </form>
 

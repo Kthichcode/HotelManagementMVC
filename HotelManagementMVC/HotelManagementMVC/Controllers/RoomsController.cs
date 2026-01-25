@@ -47,6 +47,7 @@ namespace HotelManagementMVC.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Search(SearchRoomsViewModel model)
         {
             LoadRoomTypes(model);
@@ -90,10 +91,24 @@ namespace HotelManagementMVC.Controllers
                 item.RoomTypeName = r.RoomType != null ? r.RoomType.Name : "";
                 item.PricePerNight = r.RoomType != null ? r.RoomType.PricePerNight : 0;
 
+                // ✅ NEW (để hiện ảnh + max occupancy)
+                item.ImageUrl = r.ImageUrl;
+                item.MaxOccupancy = r.MaxOccupancy;
+
                 model.Results.Add(item);
             }
 
             return View(model);
+        }
+
+        // ✅ NEW: View Details (xem ảnh + mô tả + số người)
+        [HttpGet]
+        public IActionResult Details(int id)
+        {
+            var room = _roomService.GetByIdWithImages(id);
+            if (room == null) return NotFound();
+
+            return View(room);
         }
     }
 }

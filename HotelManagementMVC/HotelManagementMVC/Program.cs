@@ -51,6 +51,8 @@ namespace HotelManagementMVC
             builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
             builder.Services.AddScoped<IDashboardService, DashboardService>();
 
+            builder.Services.AddScoped<IRoomImageRepository, RoomImageRepository>();
+
 
 
 

@@ -1,0 +1,34 @@
+﻿@model BusinessObjects.Entities.Room
+
+@{
+    ViewData["Title"] = "Room Details";
+}
+
+<h2 class="mb-3">Room @Model.RoomNumber</h2>
+
+<div class="mb-2"><b>Type:</b> @Model.RoomType?.Name</div>
+<div class="mb-2"><b>Max Occupancy:</b> @Model.MaxOccupancy</div>
+
+@if (!string.IsNullOrWhiteSpace(Model.Description))
+{
+    <div class="mb-3"><b>Description:</b> @Model.Description</div>
+}
+
+@if (Model.RoomImages != null && Model.RoomImages.Count > 0)
+{
+    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        @foreach (var img in Model.RoomImages)
+        {
+            <img src="@img.ImageUrl"
+                 style="width:260px;height:170px;object-fit:cover;border-radius:12px;border:1px solid #eee;" />
+        }
+    </div>
+}
+else
+{
+    <div class="text-muted">No images available.</div>
+}
+
+<div class="mt-4">
+    <a asp-action="Search" class="btn btn-secondary">Back to Search</a>
+</div>

@@ -58,7 +58,7 @@
     </div>
 </div>
 
-@if (Model.Results != null && Model.Results.Any())
+@if (Model.Results != null && Model.Results.Count > 0)
 {
     <hr class="my-5" />
     <h3 class="mb-3">Available Rooms (@Model.Results.Count)</h3>
@@ -67,20 +67,44 @@
         <table class="table table-hover table-bordered">
             <thead class="table-light">
                 <tr>
+                    <th style="width:140px;">Image</th>
                     <th>Room Number</th>
                     <th>Type</th>
+                    <th class="text-center" style="width:90px;">Max</th>
                     <th>Price / Night</th>
-                    <th class="text-center">Action</th>
+                    <th class="text-center" style="width:240px;">Action</th>
                 </tr>
             </thead>
+
             <tbody>
                 @foreach (var r in Model.Results)
                 {
                     <tr>
+                        <td class="align-middle">
+                            @if (!string.IsNullOrWhiteSpace(r.ImageUrl))
+                            {
+                                <img src="@r.ImageUrl"
+                                     style="width:120px;height:80px;object-fit:cover;border-radius:10px;border:1px solid #eee;" />
+                            }
+                            else
+                            {
+                                <div class="text-muted small">No image</div>
+                            }
+                        </td>
+
                         <td class="align-middle fw-bold">@r.RoomNumber</td>
                         <td class="align-middle">@r.RoomTypeName</td>
+                        <td class="align-middle text-center">@r.MaxOccupancy</td>
                         <td class="align-middle text-success fw-bold">@r.PricePerNight.ToString("N0") VND</td>
+
                         <td class="text-center">
+                            <a asp-controller="Rooms"
+                               asp-action="Details"
+                               asp-route-id="@r.RoomId"
+                               class="btn btn-outline-primary btn-sm me-2">
+                                View Details
+                            </a>
+
                             <a asp-controller="Bookings"
                                asp-action="Confirm"
                                asp-route-roomId="@r.RoomId"
@@ -100,6 +124,12 @@ else if (Context.Request.Method == "POST")
 {
     <div class="alert alert-warning text-center mt-4">
         No rooms found matching your criteria. Please try different dates.
+    </div>
+}
+else
+{
+    <div class="alert alert-info text-center mt-4">
+        Please enter check-in/check-out dates and click Search.
     </div>
 }
 
