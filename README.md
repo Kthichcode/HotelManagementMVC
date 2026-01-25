@@ -404,6 +404,6 @@ Dự án này được phát triển cho mục đích học tập và nghiên c�
 
 ---
 
-**Phát triển bởi:** PRN222 Team  
+**Phát triển bởi:** PRN222 Team 2
 **Framework:** ASP.NET Core MVC 8.0  
 **Database:** SQL Server
