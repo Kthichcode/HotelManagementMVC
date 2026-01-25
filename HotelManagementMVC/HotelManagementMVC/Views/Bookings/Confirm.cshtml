@@ -1,31 +1,439 @@
 ﻿@model HotelManagementMVC.Models.BookingConfirmViewModel
 
-<h2>Xác Nhận Đặt Phòng</h2>
+@{
+    ViewData["Title"] = "Xác Nhận Đặt Phòng";
+}
 
-<div class="card">
-    <div class="card-body">
-        <h5 class="card-title">Chi Tiết Đặt Phòng</h5>
-        <div class="alert alert-info">
-            <strong>Phòng:</strong> @Model.RoomNumber <br />
-            <strong>Loại Phòng:</strong> @Model.RoomTypeName <br />
-            <strong>Thời Gian:</strong> @Model.CheckIn.ToShortDateString() - @Model.CheckOut.ToShortDateString() <br />
-            <strong>Số Đêm:</strong> @Model.TotalNights <br />
-            <strong>Giá/Đêm:</strong> @Model.PricePerNight.ToString("N2") <br />
+<style>
+    body {
+        background: #f5f5f5;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .confirm-wrapper {
+        max-width: 900px;
+        margin: 30px auto;
+        padding: 0 20px;
+    }
+
+    .confirm-modal-container {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        margin-bottom: 30px;
+    }
+
+    .confirm-modal-header {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        color: white;
+        padding: 50px 40px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .confirm-modal-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    }
+
+    .confirm-modal-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0 0 10px 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .confirm-modal-header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .confirm-modal-body {
+        padding: 40px;
+    }
+
+    .booking-summary-card {
+        background: #fafafa;
+        border: 2px solid #e0e0e0;
+        border-radius: 15px;
+        padding: 35px;
+        margin-bottom: 30px;
+    }
+
+    .summary-header {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 3px solid #1a1a1a;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .summary-row:last-child {
+        border-bottom: none;
+    }
+
+    .summary-label {
+        font-size: 1rem;
+        color: #666;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .summary-label i {
+        color: #1a1a1a;
+        font-size: 1.2rem;
+    }
+
+    .summary-value {
+        font-size: 1.1rem;
+        color: #1a1a1a;
+        font-weight: 700;
+    }
+
+    .total-row {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 3px solid #1a1a1a;
+    }
+
+    .total-row .summary-label {
+        font-size: 1.3rem;
+        color: #1a1a1a;
+    }
+
+    .total-row .summary-value {
+        font-size: 2rem;
+        color: #1a1a1a;
+    }
+
+    .payment-section {
+        margin-bottom: 30px;
+    }
+
+    .payment-header {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .payment-header i {
+        font-size: 1.5rem;
+    }
+
+    .payment-info {
+        background: #fff3cd;
+        border: 2px solid #ffc107;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 25px;
+    }
+
+    .payment-info p {
+        margin: 0;
+        color: #856404;
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    .payment-info strong {
+        color: #1a1a1a;
+    }
+
+    .payment-methods {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .payment-method-card {
+        background: white;
+        border: 3px solid #e0e0e0;
+        border-radius: 15px;
+        padding: 25px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .payment-method-card:hover {
+        border-color: #1a1a1a;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .payment-method-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+
+    .payment-icon {
+        width: 60px;
+        height: 60px;
+        background: #1a1a1a;
+        color: white;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+    }
+
+    .payment-method-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0;
+    }
+
+    .payment-method-desc {
+        color: #666;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    .payment-badge {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: #1a1a1a;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .action-bar {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        padding: 30px 40px;
+        background: #fafafa;
+        border-top: 2px solid #e0e0e0;
+    }
+
+    .btn-confirm {
+        flex: 1;
+        background: #1a1a1a;
+        color: white;
+        padding: 18px 40px;
+        border-radius: 50px;
+        border: none;
+        font-size: 1.1rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+    }
+
+    .btn-confirm:hover {
+        background: #000;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        color: white;
+    }
+
+    .btn-cancel {
+        background: white;
+        color: #1a1a1a;
+        padding: 18px 35px;
+        border-radius: 50px;
+        border: 2px solid #1a1a1a;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-cancel:hover {
+        background: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+
+    .error-summary {
+        background: #f8d7da;
+        border: 2px solid #f5c6cb;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 25px;
+    }
+
+    .error-summary ul {
+        margin: 0;
+        padding-left: 20px;
+        color: #721c24;
+    }
+
+    @@media (max-width: 768px) {
+        .confirm-modal-header h1 {
+            font-size: 2rem;
+        }
+
+        .summary-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .action-bar {
+            flex-direction: column;
+        }
+
+        .btn-confirm {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="confirm-wrapper">
+    <div class="confirm-modal-container">
+        <!-- Modal Header -->
+        <div class="confirm-modal-header">
+            <h1><i class="fas fa-check-circle"></i> Xác Nhận Đặt Phòng</h1>
+            <p>Vui lòng kiểm tra thông tin và chọn phương thức thanh toán</p>
         </div>
 
-        <h3 class="text-primary">Tổng Cộng: @Model.TotalAmount.ToString("N2")</h3>
+        <!-- Modal Body -->
+        <div class="confirm-modal-body">
+            <!-- Booking Summary -->
+            <div class="booking-summary-card">
+                <div class="summary-header">
+                    <i class="fas fa-file-invoice"></i> Chi Tiết Đặt Phòng
+                </div>
 
-        <form asp-action="Create" method="post">
-            <input type="hidden" asp-for="RoomId" />
-            <input type="hidden" asp-for="CheckIn" />
-            <input type="hidden" asp-for="CheckOut" />
-            <input type="hidden" asp-for="PricePerNight" />
-            <!-- Lưu ý: Tính lại tổng tiền ở server là an toàn hơn, nhưng việc truyền tham số giúp xác thực -->
+                <div class="summary-row">
+                    <div class="summary-label">
+                        <i class="fas fa-door-open"></i>
+                        Phòng
+                    </div>
+                    <div class="summary-value">@Model.RoomNumber</div>
+                </div>
 
-            <div class="text-danger">@Html.ValidationSummary(true)</div>
+                <div class="summary-row">
+                    <div class="summary-label">
+                        <i class="fas fa-bed"></i>
+                        Loại Phòng
+                    </div>
+                    <div class="summary-value">@Model.RoomTypeName</div>
+                </div>
 
-            <button type="submit" class="btn btn-success btn-lg">Xác Nhận & Đặt Phòng</button>
-            <a asp-controller="Rooms" asp-action="Search" class="btn btn-secondary btn-lg">Hủy</a>
-        </form>
+                <div class="summary-row">
+                    <div class="summary-label">
+                        <i class="fas fa-calendar-alt"></i>
+                        Ngày Nhận Phòng
+                    </div>
+                    <div class="summary-value">@Model.CheckIn.ToString("dd/MM/yyyy")</div>
+                </div>
+
+                <div class="summary-row">
+                    <div class="summary-label">
+                        <i class="fas fa-calendar-alt"></i>
+                        Ngày Trả Phòng
+                    </div>
+                    <div class="summary-value">@Model.CheckOut.ToString("dd/MM/yyyy")</div>
+                </div>
+
+                <div class="summary-row">
+                    <div class="summary-label">
+                        <i class="fas fa-moon"></i>
+                        Số Đêm
+                    </div>
+                    <div class="summary-value">@Model.TotalNights đêm</div>
+                </div>
+
+                <div class="summary-row">
+                    <div class="summary-label">
+                        <i class="fas fa-tag"></i>
+                        Giá / Đêm
+                    </div>
+                    <div class="summary-value">@Model.PricePerNight.ToString("N0") VND</div>
+                </div>
+
+                <div class="summary-row total-row">
+                    <div class="summary-label">
+                        <i class="fas fa-calculator"></i>
+                        Tổng Thanh Toán
+                    </div>
+                    <div class="summary-value">@Model.TotalAmount.ToString("N0") VND</div>
+                </div>
+            </div>
+
+            
+
+
+
+            <!-- Error Summary -->
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="error-summary">
+                    <strong><i class="fas fa-exclamation-triangle"></i> Lỗi:</strong>
+                    <ul>
+                        @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <li>@err.ErrorMessage</li>
+                        }
+                    </ul>
+                </div>
+            }
+
+            <!-- Hidden Form -->
+            <form asp-action="Create" method="post" id="bookingForm">
+                <input type="hidden" asp-for="RoomId" />
+                <input type="hidden" asp-for="CheckIn" />
+                <input type="hidden" asp-for="CheckOut" />
+                <input type="hidden" asp-for="PricePerNight" />
+            </form>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="action-bar">
+            <button type="submit" form="bookingForm" class="btn-confirm">
+                <i class="fas fa-check-circle"></i>
+                Xác Nhận & Thanh Toán
+            </button>
+            <a asp-controller="Rooms" asp-action="Search" class="btn-cancel">
+                <i class="fas fa-times"></i>
+                Hủy
+            </a>
+        </div>
     </div>
 </div>

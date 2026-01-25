@@ -6,8 +6,8 @@
 
 <div class="container mt-4">
     <!-- Wallet Balance Card -->
-    <div class="card shadow-lg mb-4" style="border-radius: 20px; overflow: hidden;">
-        <div class="card-header text-white" style="background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%); padding: 30px;">
+    <div class="card shadow-lg mb-4" style="border-radius: 20px; overflow: hidden; border: 2px solid #e0e0e0;">
+        <div class="card-header text-white" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); padding: 30px;">
             <div class="row align-items-center">
                 <div class="col-md-6">
                     <h3 class="mb-1">
@@ -24,20 +24,20 @@
         <div class="card-body p-4">
             <div class="row g-3">
                 <div class="col-md-6">
-                    <div class="p-3 bg-light rounded">
+                    <div class="p-3 rounded" style="background: #fafafa; border: 2px solid #e0e0e0;">
                         <div class="d-flex align-items-center">
                             <div class="me-3">
-                                <i class="fas fa-credit-card fa-2x text-primary"></i>
+                                <i class="fas fa-credit-card fa-2x" style="color: #1a1a1a;"></i>
                             </div>
                             <div>
                                 <small class="text-muted">Wallet ID</small>
-                                <div class="fw-bold">@Model.Id</div>
+                                <div class="fw-bold" style="color: #1a1a1a;">@Model.Id</div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="p-3 bg-light rounded">
+                    <div class="p-3 rounded" style="background: #fafafa; border: 2px solid #e0e0e0;">
                         <div class="d-flex align-items-center">
                             <div class="me-3">
                                 <i class="fas fa-user-circle fa-2x text-success"></i>
@@ -58,42 +58,42 @@
     <!-- Quick Actions -->
     <div class="row g-4 mb-4">
         <div class="col-md-4">
-            <div class="card h-100 shadow-sm hover-lift">
+            <div class="card h-100 shadow-sm hover-lift" style="border: 2px solid #e0e0e0; border-radius: 15px;">
                 <div class="card-body text-center p-4">
                     <div class="mb-3">
-                        <i class="fas fa-plus-circle fa-3x text-primary"></i>
+                        <i class="fas fa-plus-circle fa-3x" style="color: #1a1a1a;"></i>
                     </div>
-                    <h5 class="card-title">Top Up</h5>
+                    <h5 class="card-title" style="color: #1a1a1a;">Top Up</h5>
                     <p class="card-text text-muted">Add funds to your wallet</p>
-                    <button class="btn btn-primary" disabled>
+                    <button class="btn btn-dark" disabled style="border-radius: 25px; padding: 10px 25px;">
                         <i class="fas fa-plus"></i> Coming Soon
                     </button>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card h-100 shadow-sm hover-lift">
+            <div class="card h-100 shadow-sm hover-lift" style="border: 2px solid #e0e0e0; border-radius: 15px;">
                 <div class="card-body text-center p-4">
                     <div class="mb-3">
-                        <i class="fas fa-history fa-3x text-info"></i>
+                        <i class="fas fa-history fa-3x" style="color: #1a1a1a;"></i>
                     </div>
-                    <h5 class="card-title">Transaction History</h5>
+                    <h5 class="card-title" style="color: #1a1a1a;">Transaction History</h5>
                     <p class="card-text text-muted">View all transactions</p>
-                    <button class="btn btn-info" disabled>
+                    <button class="btn btn-dark" disabled style="border-radius: 25px; padding: 10px 25px;">
                         <i class="fas fa-list"></i> Coming Soon
                     </button>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card h-100 shadow-sm hover-lift">
+            <div class="card h-100 shadow-sm hover-lift" style="border: 2px solid #e0e0e0; border-radius: 15px;">
                 <div class="card-body text-center p-4">
                     <div class="mb-3">
-                        <i class="fas fa-exchange-alt fa-3x text-success"></i>
+                        <i class="fas fa-exchange-alt fa-3x" style="color: #1a1a1a;"></i>
                     </div>
-                    <h5 class="card-title">Transfer</h5>
+                    <h5 class="card-title" style="color: #1a1a1a;">Transfer</h5>
                     <p class="card-text text-muted">Send money to others</p>
-                    <button class="btn btn-success" disabled>
+                    <button class="btn btn-dark" disabled style="border-radius: 25px; padding: 10px 25px;">
                         <i class="fas fa-paper-plane"></i> Coming Soon
                     </button>
                 </div>
@@ -102,12 +102,12 @@
     </div>
 
     <!-- Info Alert -->
-    <div class="alert alert-info border-0 shadow-sm">
+    <div class="alert border-0 shadow-sm" style="background: #fafafa; border-left: 5px solid #1a1a1a !important; border-radius: 12px;">
         <div class="d-flex align-items-start">
-            <i class="fas fa-info-circle fa-2x me-3"></i>
+            <i class="fas fa-info-circle fa-2x me-3" style="color: #1a1a1a;"></i>
             <div>
-                <h5 class="alert-heading">About Your Wallet</h5>
-                <p class="mb-0">
+                <h5 class="alert-heading" style="color: #1a1a1a;">About Your Wallet</h5>
+                <p class="mb-0" style="color: #666;">
                     Your wallet can be used to pay for room bookings and other hotel services. 
                     You can top up your wallet using various payment methods including VNPay.
                 </p>
@@ -123,5 +123,17 @@
     .hover-lift:hover {
         transform: translateY(-5px);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+        border-color: #1a1a1a !important;
+    }
+    
+    .btn-dark {
+        background: #1a1a1a !important;
+        border: none !important;
+        font-weight: 600;
+    }
+    
+    .btn-dark:hover:not(:disabled) {
+        background: #000 !important;
+        transform: translateY(-2px);
     }
 </style>

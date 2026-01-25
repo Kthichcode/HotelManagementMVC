@@ -4,10 +4,356 @@
     var roomTypes = ViewBag.RoomTypes as List<BusinessObjects.Entities.RoomType>;
 }
 
+<style>
+    /* Hero Banner with Image */
+    .hero-banner {
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                    url('https://i.pinimg.com/1200x/08/14/36/081436338aed42e19743d8f282f50d6b.jpg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        color: white;
+        padding: 150px 0;
+        margin-bottom: 60px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-banner::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.3);
+        z-index: 0;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+    }
+
+    .hero-content h1 {
+        font-size: 4rem;
+        font-weight: 900;
+        margin-bottom: 25px;
+        text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+        letter-spacing: 2px;
+    }
+
+    .hero-content p {
+        font-size: 1.5rem;
+        opacity: 0.95;
+        max-width: 700px;
+        margin: 0 auto;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        font-weight: 500;
+    }
+
+    /* Section Styling */
+    .py-80 {
+        padding: 80px 0;
+    }
+
+    .section-title {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .section-title h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 15px;
+    }
+
+    .section-title p {
+        font-size: 1.1rem;
+        color: #666;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    /* Feature Icon Boxes */
+    .feature-icon-box {
+        text-align: center;
+        padding: 40px 20px;
+        background: white;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        height: 100%;
+        border: 2px solid #e0e0e0;
+    }
+
+    .feature-icon-box:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        border-color: #1a1a1a;
+    }
+
+    .icon-circle {
+        width: 80px;
+        height: 80px;
+        background: #1a1a1a;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px;
+        font-size: 2rem;
+        transition: all 0.3s ease;
+    }
+
+    .feature-icon-box:hover .icon-circle {
+        background: #000;
+        transform: rotate(360deg);
+    }
+
+    .feature-icon-box h4 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 15px;
+    }
+
+    .feature-icon-box p {
+        color: #666;
+        font-size: 0.95rem;
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    /* Room Cards */
+    .room-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        height: 100%;
+        border: 2px solid #e0e0e0;
+    }
+
+    .room-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        border-color: #1a1a1a;
+    }
+
+    .room-card-img {
+        position: relative;
+        overflow: hidden;
+        height: 250px;
+    }
+
+    .room-card-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .room-card:hover .room-card-img img {
+        transform: scale(1.1);
+    }
+
+    .room-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: #1a1a1a;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        z-index: 1;
+    }
+
+    .room-card-body {
+        padding: 25px;
+    }
+
+    .room-card-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 12px;
+    }
+
+    .room-card-text {
+        color: #666;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+    .room-features {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .room-feature-item {
+        font-size: 0.85rem;
+        color: #666;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .room-feature-item i {
+        color: #1a1a1a;
+    }
+
+    .room-price {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 20px;
+        border-top: 2px solid #f0f0f0;
+    }
+
+    .price-tag {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #1a1a1a;
+    }
+
+    .price-tag small {
+        font-size: 0.9rem;
+        color: #666;
+        font-weight: 400;
+    }
+
+    .btn-book-now {
+        background: #1a1a1a;
+        color: white;
+        padding: 12px 30px;
+        border-radius: 25px;
+        border: none;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+
+    .btn-book-now:hover {
+        background: #000;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Stats Cards */
+    .stats-card {
+        background: white;
+        border-radius: 15px;
+        padding: 40px 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 2px solid #e0e0e0;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border-color: #1a1a1a;
+    }
+
+    .stats-number {
+        display: block;
+        font-size: 3rem;
+        font-weight: 800;
+        color: #1a1a1a;
+        margin-bottom: 10px;
+    }
+
+    .stats-label {
+        display: block;
+        font-size: 1.1rem;
+        color: #666;
+        font-weight: 500;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        color: white;
+        padding: 80px 0;
+        text-align: center;
+        margin-top: 80px;
+    }
+
+    .cta-section h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    .cta-section p {
+        font-size: 1.2rem;
+        margin-bottom: 40px;
+        opacity: 0.9;
+    }
+
+    .btn-light-cta {
+        background: white;
+        color: #1a1a1a;
+        padding: 15px 40px;
+        border-radius: 50px;
+        border: none;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-light-cta:hover {
+        background: #f0f0f0;
+        color: #000;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-outline-light {
+        border: 2px solid white;
+        color: white;
+        padding: 15px 40px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-light:hover {
+        background: white;
+        color: #1a1a1a;
+        transform: translateY(-3px);
+    }
+
+    @@media (max-width: 768px) {
+        .hero-content h1 {
+            font-size: 2.5rem;
+        }
+
+        .section-title h2 {
+            font-size: 2rem;
+        }
+
+        .room-card-img {
+            height: 200px;
+        }
+    }
+</style>
+
 @if (TempData["SuccessMessage"] != null)
 {
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["SuccessMessage"]
+    <div class="alert alert-success alert-dismissible fade show mx-auto" style="max-width: 1200px; margin-top: 20px;" role="alert">
+        <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
@@ -16,8 +362,8 @@
 <section class="hero-banner">
     <div class="container">
         <div class="hero-content">
-            <h1 class="animate__animated animate__fadeInDown">Tìm Phòng Ở Hoàn Hảo Cho Bạn</h1>
-            <p class="animate__animated animate__fadeInUp">Khám phá các phòng cao cấp với giá không thể tốt hơn</p>
+            <h1><i class="fas fa-hotel"></i> Tìm Phòng Ở Hoàn Hảo Cho Bạn</h1>
+            <p>Khám phá các phòng cao cấp với giá không thể tốt hơn và dịch vụ hoàn hảo</p>
         </div>
     </div>
 </section>

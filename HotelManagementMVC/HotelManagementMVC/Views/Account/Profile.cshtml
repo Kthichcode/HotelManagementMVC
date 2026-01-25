@@ -1,46 +1,323 @@
 ﻿@model HotelManagementMVC.Models.ProfileViewModel
 
-<h2>Hồ Sơ Của Tôi</h2>
-
-@if (ViewBag.Message != null)
-{
-    <div class="alert alert-success">@ViewBag.Message</div>
+@{
+    ViewData["Title"] = "Hồ Sơ Của Tôi";
 }
 
-<div style="color:red;">
-    @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-    {
-        <div>@err.ErrorMessage</div>
+<style>
+    .profile-wrapper {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 0 20px;
     }
+
+    .profile-modal-container {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        margin-bottom: 30px;
+        border: 2px solid #e0e0e0;
+    }
+
+    .profile-modal-header {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        color: white;
+        padding: 50px 40px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .profile-modal-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    }
+
+    .profile-icon {
+        width: 120px;
+        height: 120px;
+        background: white;
+        color: #1a1a1a;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 4rem;
+        position: relative;
+        z-index: 1;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .profile-modal-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .profile-modal-body {
+        padding: 40px;
+    }
+
+    .alert-custom {
+        padding: 20px 25px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        font-size: 1rem;
+        font-weight: 500;
+        border: 2px solid;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .alert-custom i {
+        font-size: 1.5rem;
+    }
+
+    .alert-success-custom {
+        background: #d4edda;
+        border-color: #28a745;
+        color: #155724;
+    }
+
+    .alert-danger-custom {
+        background: #f8d7da;
+        border-color: #dc3545;
+        color: #721c24;
+    }
+
+    .form-section {
+        margin-bottom: 30px;
+    }
+
+    .form-section-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 3px solid #1a1a1a;
+    }
+
+    .form-group-custom {
+        margin-bottom: 25px;
+    }
+
+    .form-label-custom {
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 10px;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-label-custom i {
+        color: #1a1a1a;
+        font-size: 1.1rem;
+    }
+
+    .form-control-custom {
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 15px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+    }
+
+    .form-control-custom:focus {
+        border-color: #1a1a1a;
+        box-shadow: 0 0 0 0.2rem rgba(26, 26, 26, 0.1);
+        background: white;
+    }
+
+    .form-control-custom:disabled {
+        background: #e9ecef;
+        cursor: not-allowed;
+        color: #6c757d;
+    }
+
+    .readonly-field {
+        background: #f8f9fa;
+        border: 2px dashed #dee2e6;
+        color: #6c757d;
+        cursor: not-allowed;
+    }
+
+    .action-bar {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        padding: 30px 40px;
+        background: #fafafa;
+        border-top: 2px solid #e0e0e0;
+    }
+
+    .btn-save {
+        flex: 1;
+        background: #1a1a1a;
+        color: white;
+        padding: 15px 40px;
+        border-radius: 50px;
+        border: none;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+    }
+
+    .btn-save:hover {
+        background: #000;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-back {
+        background: white;
+        color: #1a1a1a;
+        padding: 15px 35px;
+        border-radius: 50px;
+        border: 2px solid #1a1a1a;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-back:hover {
+        background: #1a1a1a;
+        color: white;
+    }
+
+    .text-danger {
+        font-size: 0.875rem;
+        margin-top: 5px;
+        display: block;
+    }
+</style>
+
+<div class="profile-wrapper">
+    <div class="profile-modal-container">
+        <!-- Modal Header -->
+        <div class="profile-modal-header">
+            <div class="profile-icon">
+                <i class="fas fa-user"></i>
+            </div>
+            <h1><i class="fas fa-id-card"></i> Hồ Sơ Của Tôi</h1>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="profile-modal-body">
+            @if (ViewBag.Message != null)
+            {
+                <div class="alert-custom alert-success-custom">
+                    <i class="fas fa-check-circle"></i>
+                    <span>@ViewBag.Message</span>
+                </div>
+            }
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert-custom alert-danger-custom">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <strong>Lỗi:</strong>
+                        <ul class="mb-0 ps-3 mt-2">
+                            @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <li>@err.ErrorMessage</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            }
+
+            <form method="post">
+                @Html.AntiForgeryToken()
+
+                <!-- Account Information Section -->
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-lock"></i> Thông Tin Tài Khoản
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">
+                            <i class="fas fa-user-circle"></i>
+                            Tên Người Dùng
+                        </label>
+                        <input class="form-control-custom readonly-field" value="@Model.UserName" disabled readonly />
+                        <small class="text-muted">Tên đăng nhập không thể thay đổi</small>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">
+                            <i class="fas fa-envelope"></i>
+                            Email
+                        </label>
+                        <input class="form-control-custom readonly-field" value="@Model.Email" disabled readonly />
+                        <small class="text-muted">Email xác thực không thể thay đổi</small>
+                    </div>
+                </div>
+
+                <!-- Personal Information Section -->
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-user-edit"></i> Thông Tin Cá Nhân
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label class="form-label-custom" asp-for="FullName">
+                            <i class="fas fa-id-badge"></i>
+                            Họ Tên
+                        </label>
+                        <input class="form-control-custom" asp-for="FullName" placeholder="Nhập họ tên đầy đủ" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label class="form-label-custom" asp-for="PhoneNumber">
+                            <i class="fas fa-phone"></i>
+                            Số Điện Thoại
+                        </label>
+                        <input class="form-control-custom" asp-for="PhoneNumber" placeholder="Nhập số điện thoại" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="action-bar">
+            <button type="submit" form="profileForm" class="btn-save">
+                <i class="fas fa-save"></i> Lưu Thay Đổi
+            </button>
+            <a asp-controller="Home" asp-action="Index" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Quay Lại
+            </a>
+        </div>
+    </div>
 </div>
-
-<form method="post">
-    @Html.AntiForgeryToken()
-
-    <div class="mb-3">
-        <label>Tên Người Dùng</label>
-        <input class="form-control" value="@Model.UserName" disabled />
-    </div>
-
-    <div class="mb-3">
-        <label>Email</label>
-        <input class="form-control" value="@Model.Email" disabled />
-    </div>
-
-    <div class="mb-3">
-        <label>Họ Tên</label>
-        <input class="form-control" asp-for="FullName" />
-        <span asp-validation-for="FullName" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label>Số Điện Thoại</label>
-        <input class="form-control" asp-for="PhoneNumber" />
-    </div>
-
-    <button class="btn btn-primary" type="submit">Lưu</button>
-</form>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Add form id for submit button
+        document.querySelector('form').setAttribute('id', 'profileForm');
+    </script>
 }
