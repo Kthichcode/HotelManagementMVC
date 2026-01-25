@@ -4,31 +4,384 @@
     ViewData["Title"] = "Chi Tiết Phòng";
 }
 
-<h2 class="mb-3">Phòng @Model.RoomNumber</h2>
+<style>
+    body {
+        background: #f5f5f5;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-<div class="mb-2"><b>Loại Phòng:</b> @Model.RoomType?.Name</div>
-<div class="mb-2"><b>Sức Chứa Tối Đa:</b> @Model.MaxOccupancy</div>
+    .room-details-wrapper {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 0 20px;
+    }
 
-@if (!string.IsNullOrWhiteSpace(Model.Description))
-{
-    <div class="mb-3"><b>Mô Tả:</b> @Model.Description</div>
-}
+    .room-modal-container {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        margin-bottom: 30px;
+    }
 
-@if (Model.RoomImages != null && Model.RoomImages.Count > 0)
-{
-    <div style="display:flex; gap:12px; flex-wrap:wrap;">
-        @foreach (var img in Model.RoomImages)
-        {
-            <img src="@img.ImageUrl"
-                 style="width:260px;height:170px;object-fit:cover;border-radius:12px;border:1px solid #eee;" />
-        }
+    .room-modal-header {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        color: white;
+        padding: 50px 40px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .room-modal-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    }
+
+    .room-modal-header h1 {
+        font-size: 2.8rem;
+        font-weight: 700;
+        margin: 0 0 15px 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .room-modal-header .room-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        font-weight: 300;
+        position: relative;
+        z-index: 1;
+    }
+
+    .room-badge {
+        display: inline-block;
+        background: white;
+        color: #1a1a1a;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-top: 15px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .room-modal-body {
+        padding: 40px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+    }
+
+    .info-box {
+        background: #fafafa;
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 25px;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .info-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        border-color: #1a1a1a;
+    }
+
+    .info-box-icon {
+        width: 50px;
+        height: 50px;
+        background: #1a1a1a;
+        color: white;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+
+    .info-box-label {
+        font-size: 0.85rem;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+
+    .info-box-value {
+        font-size: 1.3rem;
+        color: #1a1a1a;
+        font-weight: 700;
+    }
+
+    .info-box-value.price {
+        font-size: 1.8rem;
+        color: #1a1a1a;
+    }
+
+    .info-box-value small {
+        font-size: 0.8rem;
+        color: #999;
+        font-weight: 400;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        color: #1a1a1a;
+        font-weight: 700;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 3px solid #1a1a1a;
+        display: inline-block;
+    }
+
+    .description-box {
+        background: #fafafa;
+        border-left: 5px solid #1a1a1a;
+        padding: 30px;
+        border-radius: 10px;
+        margin-bottom: 40px;
+    }
+
+    .description-box p {
+        color: #333;
+        line-height: 1.8;
+        font-size: 1.05rem;
+        margin: 0;
+    }
+
+    .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 40px;
+    }
+
+    .gallery-card {
+        position: relative;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        background: #000;
+    }
+
+    .gallery-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .gallery-card img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        display: block;
+        transition: opacity 0.3s ease;
+    }
+
+    .gallery-card:hover img {
+        opacity: 0.9;
+    }
+
+    .no-gallery {
+        text-align: center;
+        padding: 80px 20px;
+        background: #fafafa;
+        border-radius: 15px;
+        border: 2px dashed #ddd;
+    }
+
+    .no-gallery i {
+        font-size: 4rem;
+        color: #ddd;
+        margin-bottom: 20px;
+        display: block;
+    }
+
+    .no-gallery p {
+        color: #999;
+        font-size: 1.1rem;
+        margin: 0;
+    }
+
+    .action-bar {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        align-items: center;
+        padding: 30px 40px;
+        background: #fafafa;
+        border-top: 2px solid #e0e0e0;
+    }
+
+    .btn-primary-custom {
+        background: #1a1a1a;
+        color: white;
+        padding: 18px 45px;
+        border-radius: 50px;
+        border: none;
+        font-size: 1.1rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-primary-custom:hover {
+        background: #000;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        color: white;
+    }
+
+    .btn-secondary-custom {
+        background: white;
+        color: #1a1a1a;
+        padding: 18px 35px;
+        border-radius: 50px;
+        border: 2px solid #1a1a1a;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-secondary-custom:hover {
+        background: #1a1a1a;
+        color: white;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #e8f5e9;
+        color: #2e7d32;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        border: 2px solid #2e7d32;
+    }
+
+    .status-badge i {
+        font-size: 1.2rem;
+    }
+
+   
+</style>
+
+<div class="room-details-wrapper">
+    <div class="room-modal-container">
+        <!-- Modal Header -->
+        <div class="room-modal-header">
+            <h1>Phòng @Model.RoomNumber</h1>
+            <div class="room-subtitle">
+                @(Model.RoomType?.Name ?? "Standard Room")
+            </div>
+            <span class="room-badge">
+                <i class="fas fa-check-circle"></i> Sẵn Sàng Đặt
+            </span>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="room-modal-body">
+            <!-- Information Grid -->
+            <div class="info-grid">
+                <div class="info-box">
+                    <div class="info-box-icon">
+                        <i class="fas fa-door-open"></i>
+                    </div>
+                    <div class="info-box-label">Loại Phòng</div>
+                    <div class="info-box-value">@(Model.RoomType?.Name ?? "N/A")</div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="info-box-label">Sức Chứa</div>
+                    <div class="info-box-value">@Model.MaxOccupancy Khách</div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-icon">
+                        <i class="fas fa-tag"></i>
+                    </div>
+                    <div class="info-box-label">Giá Phòng</div>
+                    <div class="info-box-value price">
+                        @(Model.RoomType?.PricePerNight.ToString("N0") ?? "N/A")<small>đ/đêm</small>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-icon">
+                        <i class="fas fa-bed"></i>
+                    </div>
+                    <div class="info-box-label">Số Phòng</div>
+                    <div class="info-box-value">@Model.RoomNumber</div>
+                </div>
+            </div>
+
+            <!-- Description Section -->
+            @if (!string.IsNullOrWhiteSpace(Model.Description))
+            {
+                <h2 class="section-title">
+                    <i class="fas fa-align-left"></i> Mô Tả Chi Tiết
+                </h2>
+                <div class="description-box">
+                    <p>@Model.Description</p>
+                </div>
+            }
+
+            <!-- Gallery Section -->
+            <h2 class="section-title">
+                <i class="fas fa-images"></i> Hình Ảnh Phòng
+            </h2>
+
+            @if (Model.RoomImages != null && Model.RoomImages.Count > 0)
+            {
+                <div class="gallery-grid">
+                    @foreach (var img in Model.RoomImages)
+                    {
+                        <div class="gallery-card">
+                            <img src="@img.ImageUrl" alt="Room Image" />
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="no-gallery">
+                    <i class="fas fa-image"></i>
+                    <p>Chưa có hình ảnh cho phòng này</p>
+                </div>
+            }
+        </div>
+
+        <!-- Action Bar -->
+        <div class="action-bar">           
+            <a asp-controller="Rooms" asp-action="Search" class="btn-secondary-custom">
+                <i class="fas fa-arrow-left"></i>
+                Quay Lại
+            </a>
+        </div>
     </div>
-}
-else
-{
-    <div class="text-muted">Không có hình ảnh nào.</div>
-}
-
-<div class="mt-4">
-    <a asp-action="Search" class="btn btn-secondary">Quay lại Tìm Kiếm</a>
 </div>

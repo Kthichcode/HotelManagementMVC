@@ -106,7 +106,7 @@ namespace HotelManagementMVC.Controllers
                 // Update booking status if fully paid by wallet
                 if (remaining <= 0)
                 {
-                    _bookingService.ConfirmPayment(bookingId, $"WALLET-{DateTime.UtcNow.Ticks}");
+                    _bookingService.UpdateStatus(bookingId, BusinessObjects.Enums.BookingStatus.Confirmed);
                     TempData["SuccessMessage"] = $"Booking successful! Paid full {deducted:N0} via Wallet.";
                     return RedirectToAction("Index");
                 }
