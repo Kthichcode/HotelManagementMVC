@@ -1,110 +1,161 @@
 @model HotelManagementMVC.Models.DashboardViewModel
 
 @{
-    ViewData["Title"] = "Dashboard Report";
+    ViewData["Title"] = "Dashboard & Reports";
 }
 
-<div class="container-fluid">
-    <h2 class="mb-4">Dashboard & Reports</h2>
+<!-- Dashboard Header -->
+<div class="dashboard-header-square mb-4">
+    <h2><i class="fas fa-chart-line"></i> Dashboard & Reports</h2>
+    <p class="mb-0">Welcome to the management dashboard</p>
+</div>
 
-    <!-- Statistics Cards -->
-    <div class="row mb-4">
-        <!-- Rooms -->
-        <div class="col-md-3">
-            <div class="card text-white bg-primary mb-3 shadow">
-                <div class="card-header">Rooms</div>
-                <div class="card-body">
-                    <h5 class="card-title">Total: @Model.TotalRooms</h5>
-                    <p class="card-text">
-                        Available: @Model.AvailableRooms <br />
-                        Maintenance: @Model.MaintenanceRooms
-                    </p>
-                </div>
+<!-- Statistics Cards -->
+<div class="row g-4 mb-4">
+    <!-- Rooms Card -->
+    <div class="col-xl-3 col-md-6">
+        <div class="dashboard-card-square bg-primary text-white">
+            <div class="card-header-square">
+                <i class="fas fa-door-open"></i> Rooms
             </div>
-        </div>
-
-        <!-- Bookings -->
-        <div class="col-md-3">
-            <div class="card text-white bg-success mb-3 shadow">
-                <div class="card-header">Bookings</div>
-                <div class="card-body">
-                    <h5 class="card-title">Today: @Model.BookingsToday</h5>
-                    <p class="card-text">
-                        This Month: @Model.BookingsThisMonth
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Revenue -->
-        <div class="col-md-3">
-            <div class="card text-white bg-info mb-3 shadow">
-                <div class="card-header">Revenue (Paid)</div>
-                <div class="card-body">
-                    <h5 class="card-title">Today: @Model.RevenueToday.ToString("N0")</h5>
-                    <p class="card-text">
-                        Month: @Model.RevenueThisMonth.ToString("N0")
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Quick Stats -->
-        <div class="col-md-3">
-            <div class="card bg-light mb-3 shadow">
-                <div class="card-header">System</div>
-                <div class="card-body">
-                    <p class="card-text">
-                        Date: @DateTime.Now.ToString("dd/MM/yyyy")
-                    </p>
+            <div class="card-body-square">
+                <h3 class="mb-3">Total: @Model.TotalRooms</h3>
+                <div class="stats-detail">
+                    Available: @Model.AvailableRooms<br/>
+                    Maintenance: @Model.MaintenanceRooms
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card shadow">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">Top 5 Most Booked Room Types</h5>
-                </div>
-                <div class="card-body">
-                    @if (Model.TopRoomTypes != null && Model.TopRoomTypes.Any())
-                    {
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Rank</th>
-                                    <th>Room Type</th>
-                                    <th>Bookings</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @{ int rank = 1; }
-                                @foreach (var item in Model.TopRoomTypes)
-                                {
-                                    <tr>
-                                        <td>@(rank++)</td>
-                                        <td>@item.RoomTypeName</td>
-                                        <td>@item.BookingCount</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    }
-                    else
-                    {
-                        <p class="text-muted">No booking data available yet.</p>
-                    }
+    <!-- Bookings Card -->
+    <div class="col-xl-3 col-md-6">
+        <div class="dashboard-card-square bg-success text-white">
+            <div class="card-header-square">
+                <i class="fas fa-calendar-check"></i> Bookings
+            </div>
+            <div class="card-body-square">
+                <h3 class="mb-3">Today: @Model.BookingsToday</h3>
+                <div class="stats-detail">
+                    This Month: @Model.BookingsThisMonth
                 </div>
             </div>
         </div>
-        
-        <div class="col-md-6">
-            <!-- Placeholder for chart or other stats -->
-            <div class="alert alert-secondary">
-                <h5 class="alert-heading">Admin Notices</h5>
-                <p>Welcome to the management dashboard. Metrics are updated in real-time.</p>
+    </div>
+
+    <!-- Revenue Card -->
+    <div class="col-xl-3 col-md-6">
+        <div class="dashboard-card-square bg-info text-white">
+            <div class="card-header-square">
+                <i class="fas fa-money-bill-wave"></i> Revenue (Paid)
+            </div>
+            <div class="card-body-square">
+                <h3 class="mb-3">Today: @Model.RevenueToday.ToString("N0")ð</h3>
+                <div class="stats-detail">
+                    Month: @Model.RevenueThisMonth.ToString("N0")ð
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Card -->
+    <div class="col-xl-3 col-md-6">
+        <div class="dashboard-card-square bg-light">
+            <div class="card-header-square">
+                <i class="fas fa-server"></i> System
+            </div>
+            <div class="card-body-square">
+                <h3 class="mb-3">
+                    <span class="badge bg-success">Online</span>
+                </h3>
+                <div class="stats-detail text-dark">
+                    Date: @DateTime.Now.ToString("dd/MM/yyyy")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bottom Section -->
+<div class="row g-4">
+    <!-- Top Room Types Table -->
+    <div class="col-lg-6">
+        <div class="dashboard-table-card">
+            <div class="table-card-header">
+                <h5><i class="fas fa-trophy"></i> Top 5 Most Booked Room Types</h5>
+            </div>
+            <div class="table-card-body">
+                @if (Model.TopRoomTypes != null && Model.TopRoomTypes.Any())
+                {
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th width="80">Rank</th>
+                                <th>Room Type</th>
+                                <th width="120" class="text-center">Bookings</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{ int rank = 1; }
+                            @foreach (var item in Model.TopRoomTypes)
+                            {
+                                <tr>
+                                    <td><strong>@(rank++)</strong></td>
+                                    <td>@item.RoomTypeName</td>
+                                    <td class="text-center">
+                                        <span class="badge bg-primary">@item.BookingCount</span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="text-center py-4 text-muted">
+                        No booking data available yet.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Notices -->
+    <div class="col-lg-6">
+        <div class="dashboard-table-card">
+            <div class="table-card-header">
+                <h5><i class="fas fa-bell"></i> Admin Notices</h5>
+            </div>
+            <div class="table-card-body">
+                <div class="admin-notice-square mb-3">
+                    <div class="d-flex align-items-start">
+                        <i class="fas fa-info-circle text-primary me-3" style="font-size: 1.5rem;"></i>
+                        <div>
+                            <h6 class="mb-1">Welcome</h6>
+                            <p class="mb-0 small text-muted">Welcome to the management dashboard. Metrics are updated in real-time.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="admin-notice-square mb-3">
+                    <div class="d-flex align-items-start">
+                        <i class="fas fa-chart-line text-success me-3" style="font-size: 1.5rem;"></i>
+                        <div>
+                            <h6 class="mb-1">Performance</h6>
+                            <p class="mb-0 small text-muted">@Model.BookingsToday bookings processed today</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-notice-square">
+                    <div class="d-flex align-items-start">
+                        <i class="fas fa-door-open text-info me-3" style="font-size: 1.5rem;"></i>
+                        <div>
+                            <h6 class="mb-1">Availability</h6>
+                            <p class="mb-0 small text-muted">@Model.AvailableRooms rooms currently available</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

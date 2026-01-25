@@ -7,12 +7,15 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/HotelManagementMVC.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom box-shadow sticky-top">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">HotelManagementMVC</a>
+                <a class="navbar-brand fw-bold text-primary" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-hotel"></i> HotelManagement
+                </a>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,48 +26,74 @@
                     <!-- LEFT MENU -->
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="fas fa-home"></i> Home
+                            </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Rooms" asp-action="Search">Search Rooms</a>
+                            <a class="nav-link text-dark" asp-controller="Rooms" asp-action="Search">
+                                <i class="fas fa-search"></i> Search Rooms
+                            </a>
                         </li>
                         
                         @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Customer"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Bookings" asp-action="Index">My Bookings</a>
+                                <a class="nav-link text-dark" asp-controller="Bookings" asp-action="Index">
+                                    <i class="fas fa-calendar-check"></i> My Bookings
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Wallets" asp-action="Index">My Wallet</a>
+                                <a class="nav-link text-dark" asp-controller="Wallets" asp-action="Index">
+                                    <i class="fas fa-wallet"></i> My Wallet
+                                </a>
                             </li>
                         }
 
                         @if (User.Identity != null && User.Identity.IsAuthenticated
                                                     && (User.IsInRole("Admin") || User.IsInRole("Manager")))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="RoomTypes" asp-action="Index">Manage Room Types</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="RoomsManagement" asp-action="Index">Manage Rooms</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark fw-bold" asp-controller="Dashboard" asp-action="Index">Reports</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-cog"></i> Management
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="RoomTypes" asp-action="Index">
+                                            <i class="fas fa-th-large"></i> Room Types
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="RoomsManagement" asp-action="Index">
+                                            <i class="fas fa-door-open"></i> Rooms
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Dashboard" asp-action="Index">
+                                            <i class="fas fa-chart-line"></i> Reports
+                                        </a>
+                                    </li>
+                                </ul>
                             </li>
                         }
                         
                         @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark fw-bold" asp-controller="Users" asp-action="Index">Users</a>
+                                <a class="nav-link text-dark" asp-controller="Users" asp-action="Index">
+                                    <i class="fas fa-users"></i> Users
+                                </a>
                             </li>
                         }
 
                         @if (User.Identity != null && User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("Staff")))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark fw-bold" asp-controller="BookingManagement" asp-action="Index">Bookings</a>
+                                <a class="nav-link text-dark" asp-controller="BookingManagement" asp-action="Index">
+                                    <i class="fas fa-clipboard-list"></i> Bookings
+                                </a>
                             </li>
                         }
                     </ul>
@@ -73,27 +102,39 @@
                     <ul class="navbar-nav">
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Profile">
-                                    Hello, @User.Identity.Name
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-user-circle"></i> @User.Identity.Name
                                 </a>
-                            </li>
-                            <li class="nav-item">
-                                <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline;">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-link nav-link text-dark" style="padding:0; border:0;">
-                                        Logout
-                                    </button>
-                                </form>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Account" asp-action="Profile">
+                                            <i class="fas fa-user"></i> My Profile
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form asp-controller="Account" asp-action="Logout" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="fas fa-sign-out-alt"></i> Logout
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Register</a>
+                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">
+                                    <i class="fas fa-user-plus"></i> Register
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Login</a>
+                                <a class="nav-link btn btn-primary text-white ms-2" asp-controller="Account" asp-action="Login">
+                                    <i class="fas fa-sign-in-alt"></i> Login
+                                </a>
                             </li>
                         }
                     </ul>
@@ -103,17 +144,11 @@
         </nav>
     </header>
 
-    <div class="container">
-        <main role="main" class="pb-3">
+    <div>
+        <main role="main">
             @RenderBody()
         </main>
     </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - HotelManagementMVC
-        </div>
-    </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

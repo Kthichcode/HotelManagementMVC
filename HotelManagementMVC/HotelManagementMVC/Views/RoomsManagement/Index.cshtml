@@ -4,61 +4,141 @@
     ViewData["Title"] = "Rooms Management";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Rooms Management</h2>
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-door-open"></i> Rooms Management</h2>
         <a asp-action="Create" class="btn btn-primary">
-            + Create New Room
+            <i class="fas fa-plus"></i> Create New Room
         </a>
     </div>
 
     <div class="card shadow-sm">
         <div class="card-body p-0">
-            <table class="table table-hover table-striped mb-0">
-                <thead class="bg-light">
-                    <tr>
-                        <th class="ps-4">Room Number</th>
-                        <th>Type</th>
-                        <th>Status</th>
-                        <th class="text-end pe-4">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var r in Model)
-                    {
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="bg-light">
                         <tr>
-                            <td class="ps-4 fw-bold">@r.RoomNumber</td>
-                            <td>
-                                @if (r.RoomType != null)
-                                {
-                                    <span class="badge bg-info text-dark">@r.RoomType.Name</span>
-                                }
-                                else
-                                {
-                                    <span class="text-muted">N/A</span>
-                                }
-                            </td>
-                            <td>
-                                @if (r.Status == BusinessObjects.Enums.RoomStatus.Available)
-                                {
-                                    <span class="badge bg-success">Available</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-secondary">@r.Status</span>
-                                }
-                            </td>
-                            <td class="text-end pe-4">
-                                <a asp-action="Edit" asp-route-id="@r.Id" class="btn btn-sm btn-outline-primary">Edit</a>
-                                <form asp-action="Delete" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this room?');">
-                                    <input type="hidden" name="id" value="@r.Id" />
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                                </form>
-                            </td>
+                            <th class="ps-4" width="10%">Image</th>
+                            <th width="12%">Room Number</th>
+                            <th width="15%">Type</th>
+                            <th width="12%">Status</th>
+                            <th width="10%">Max Occupancy</th>
+                            <th width="23%">Description</th>
+                            <th class="text-end pe-4" width="18%">Actions</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var r in Model)
+                        {
+                            <tr>
+                                <td class="ps-4">
+                                    @if (!string.IsNullOrEmpty(r.ImageUrl))
+                                    {
+                                        <img src="@r.ImageUrl" 
+                                             class="rounded shadow-sm" 
+                                             style="width: 60px; height: 60px; object-fit: cover; cursor: pointer;" 
+                                             alt="Room @r.RoomNumber"
+                                             onclick="showImageModal('@r.ImageUrl', 'Room @r.RoomNumber')" />
+                                    }
+                                    else
+                                    {
+                                        <div class="bg-secondary rounded d-flex align-items-center justify-content-center" 
+                                             style="width: 60px; height: 60px;">
+                                            <i class="fas fa-image text-white"></i>
+                                        </div>
+                                    }
+                                </td>
+                                <td class="fw-bold text-primary">@r.RoomNumber</td>
+                                <td>
+                                    @if (r.RoomType != null)
+                                    {
+                                        <span class="badge bg-info fs-6">@r.RoomType.Name</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">N/A</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (r.Status == BusinessObjects.Enums.RoomStatus.Available)
+                                    {
+                                        <span class="badge bg-success">Available</span>
+                                    }
+                                    else if (r.Status == BusinessObjects.Enums.RoomStatus.Maintenance)
+                                    {
+                                        <span class="badge bg-warning text-dark">Maintenance</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">@r.Status</span>
+                                    }
+                                </td>
+                                <td>
+                                    <i class="fas fa-users text-muted"></i> @r.MaxOccupancy
+                                </td>
+                                <td class="text-muted small">
+                                    @if (!string.IsNullOrEmpty(r.Description))
+                                    {
+                                        @(r.Description.Length > 50 ? r.Description.Substring(0, 50) + "..." : r.Description)
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">No description</span>
+                                    }
+                                </td>
+                                <td class="text-end pe-4">
+                                    <a asp-action="Edit" asp-route-id="@r.Id" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <form asp-action="Delete" method="post" style="display:inline;" onsubmit="return confirm('Are you sure?');">
+                                        <input type="hidden" name="id" value="@r.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
+
+<!-- Image Modal -->
+<div id="imageModal" class="modal-overlay" style="display: none;">
+    <div class="modal-container" style="max-width: 800px;">
+        <div class="modal-header-custom">
+            <h3 id="imageModalTitle">Room Image</h3>
+            <button type="button" class="modal-close-btn" onclick="closeImageModal()">&times;</button>
+        </div>
+        <div class="modal-body-custom text-center">
+            <img id="modalImage" src="" alt="Room" class="img-fluid rounded" style="max-height: 70vh;" />
+        </div>
+        <div class="modal-footer-custom">
+            <button type="button" class="btn btn-secondary" onclick="closeImageModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function showImageModal(imageUrl, title) {
+            document.getElementById('modalImage').src = imageUrl;
+            document.getElementById('imageModalTitle').textContent = title;
+            document.getElementById('imageModal').style.display = 'flex';
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('imageModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeImageModal();
+            }
+        });
+    </script>
+}
