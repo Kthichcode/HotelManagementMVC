@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Welcome to Hotel Management";
+    ViewData["Title"] = "Chào Mừng Đến Với Quản Lý Khách Sạn";
     var featuredRooms = ViewBag.FeaturedRooms as List<BusinessObjects.Entities.Room>;
     var roomTypes = ViewBag.RoomTypes as List<BusinessObjects.Entities.RoomType>;
 }
@@ -12,66 +12,64 @@
     </div>
 }
 
-<!-- HERO BANNER SECTION -->
+<!-- PHẦN TIÊU ĐỀ HERO -->
 <section class="hero-banner">
     <div class="container">
         <div class="hero-content">
-            <h1 class="animate__animated animate__fadeInDown">Find Your Perfect Stay</h1>
-            <p class="animate__animated animate__fadeInUp">Discover luxury accommodations at unbeatable prices</p>
-            
-           
+            <h1 class="animate__animated animate__fadeInDown">Tìm Phòng Ở Hoàn Hảo Cho Bạn</h1>
+            <p class="animate__animated animate__fadeInUp">Khám phá các phòng cao cấp với giá không thể tốt hơn</p>
         </div>
     </div>
 </section>
 
-<!-- FEATURES SECTION -->
+<!-- PHẦN LÝ DO CHỌN CHÚNG TÔI -->
 <section class="py-80">
     <div class="container">
         <div class="section-title">
-            <h2>Why Choose Us</h2>
-            <p>Experience world-class service and unforgettable moments</p>
+            <h2>Tại Sao Chọn Chúng Tôi</h2>
+            <p>Trải nghiệm dịch vụ đẳng cấp thế giới và những khoảnh khắc không thể quên</p>
         </div>
         <div class="row g-4">
             <div class="col-md-3 col-sm-6">
                 <div class="feature-icon-box">
                     <div class="icon-circle"><i class="fas fa-hotel"></i></div>
-                    <h4>Premium Rooms</h4>
-                    <p>Luxurious and spacious rooms with modern amenities and stunning city views.</p>
+                    <h4>Phòng Cao Cấp</h4>
+                    <p>Phòng sang trọng và rộng rãi với tiện nghi hiện đại và view thành phố tuyệt đẹp.</p>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
                 <div class="feature-icon-box">
                     <div class="icon-circle"><i class="fas fa-credit-card"></i></div>
-                    <h4>Easy Payment</h4>
-                    <p>Secure and flexible payment options including VNPay and digital wallet.</p>
+                    <h4>Thanh Toán Dễ Dàng</h4>
+                    <p>Chọn phương thức thanh toán an toàn và linh hoạt bao gồm VNPay và ví điện tử.</p>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
                 <div class="feature-icon-box">
                     <div class="icon-circle"><i class="fas fa-star"></i></div>
-                    <h4>5-Star Service</h4>
-                    <p>24/7 dedicated customer support to ensure your stay is perfect.</p>
+                    <h4>Dịch Vụ 5 Sao</h4>
+                    <p>Hỗ trợ khách hàng 24/7 để đảm bảo kỳ nghỉ của bạn hoàn hảo.</p>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
                 <div class="feature-icon-box">
                     <div class="icon-circle"><i class="fas fa-map-marker-alt"></i></div>
-                    <h4>Prime Location</h4>
-                    <p>Located in the heart of the city with easy access to attractions.</p>
+                    <h4>Vị Trí Đắc Địa</h4>
+                    <p>Vị trí trung tâm thành phố với dễ dàng tiếp cận các điểm tham quan.</p>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- FEATURED ROOMS SECTION -->
+<!-- PHẦN CÁC PHÒNG NỔI BẬT -->
 @if (featuredRooms != null && featuredRooms.Any())
 {
     <section class="py-80" style="background: #f8f9fa;">
         <div class="container">
             <div class="section-title">
-                <h2>Featured Rooms</h2>
-                <p>Handpicked accommodations for your perfect getaway</p>
+                <h2>Phòng Nổi Bật</h2>
+                <p>Chọn lọc các phòng nghỉ tuyệt vời cho kỳ nghỉ hoàn hảo của bạn</p>
             </div>
             <div class="row g-4">
                 @foreach (var room in featuredRooms)
@@ -79,99 +77,99 @@
                     <div class="col-lg-4 col-md-6">
                         <div class="room-card">
                             <div class="room-card-img">
-                                <img src="@(string.IsNullOrEmpty(room.ImageUrl) ? "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800" : room.ImageUrl)" 
+                                <img src="@(string.IsNullOrEmpty(room.ImageUrl) ? "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800" : room.ImageUrl)"
                                      alt="@room.RoomNumber" />
                                 <span class="room-badge">Available</span>
                             </div>
                             <div class="room-card-body">
-                                <h5 class="room-card-title">Room @room.RoomNumber - @room.RoomType?.Name</h5>
+                                <h5 class="room-card-title">Phòng @room.RoomNumber - @room.RoomType?.Name</h5>
                                 <p class="room-card-text">
-                                    @(string.IsNullOrEmpty(room.Description) ? "Comfortable and elegant room with all modern amenities." : 
-                                      (room.Description.Length > 80 ? room.Description.Substring(0, 80) + "..." : room.Description))
-                                </p>
-                                <div class="room-features">
-                                    <span class="room-feature-item">
-                                        <i class="fas fa-users"></i> @room.MaxOccupancy Guests
-                                    </span>
-                                    <span class="room-feature-item">
-                                        <i class="fas fa-wifi"></i> Free WiFi
-                                    </span>
-                                    <span class="room-feature-item">
-                                        <i class="fas fa-utensils"></i> Breakfast
-                                    </span>
-                                </div>
-                                <div class="room-price">
-                                    <div class="price-tag">
-                                        @(room.RoomType?.PricePerNight.ToString("N0") ?? "N/A")đ
-                                        <small>/night</small>
-                                    </div>
-                                    <a asp-controller="Rooms" asp-action="Search" class="btn btn-book-now">
-                                        Book Now
-                                    </a>
-                                </div>
+                                    @(string.IsNullOrEmpty(room.Description) ? "Phòng thoải mái và thanh lịch với tất cả tiện nghi hiện đại." :
+                                                                (room.Description.Length > 80 ? room.Description.Substring(0, 80) + "..." : room.Description))
+                        </p>
+                        <div class="room-features">
+                            <span class="room-feature-item">
+                                <i class="fas fa-users"></i> @room.MaxOccupancy Guests
+                            </span>
+                            <span class="room-feature-item">
+                                <i class="fas fa-wifi"></i> WiFi miễn phí
+                            </span>
+                            <span class="room-feature-item">
+                                <i class="fas fa-utensils"></i> Bữa sáng
+                            </span>
+                        </div>
+                        <div class="room-price">
+                            <div class="price-tag">
+                                @(room.RoomType?.PricePerNight.ToString("N0") ?? "N/A")đ
+                                <small>/đêm</small>
                             </div>
+                            <a asp-controller="Rooms" asp-action="Search" class="btn btn-book-now">
+                                Đặt Ngay
+                            </a>
                         </div>
                     </div>
-                }
+                </div>
+            </div>
+                        }
             </div>
             <div class="text-center mt-5">
                 <a asp-controller="Rooms" asp-action="Search" class="btn btn-primary btn-lg px-5">
-                    View All Rooms
+                    Xem Tất Cả Các Phòng
                 </a>
             </div>
         </div>
     </section>
 }
 
-<!-- STATISTICS SECTION -->
+<!-- PHẦN THỐNG KÊ -->
 <section class="py-80">
     <div class="container">
         <div class="section-title">
-            <h2>Our Achievement</h2>
-            <p>Numbers that speak for our excellence</p>
+            <h2>Thành Tích Của Chúng Tôi</h2>
+            <p>Các con số nói lên sự xuất sắc của chúng tôi</p>
         </div>
         <div class="row g-4">
             <div class="col-lg-3 col-md-6">
                 <div class="stats-card">
                     <span class="stats-number">500+</span>
-                    <span class="stats-label">Happy Guests</span>
+                    <span class="stats-label">Khách Hàng Hài Lòng</span>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6">
                 <div class="stats-card">
                     <span class="stats-number">50+</span>
-                    <span class="stats-label">Premium Rooms</span>
+                    <span class="stats-label">Phòng Cao Cấp</span>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6">
                 <div class="stats-card">
                     <span class="stats-number">24/7</span>
-                    <span class="stats-label">Customer Support</span>
+                    <span class="stats-label">Hỗ Trợ Khách Hàng</span>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6">
                 <div class="stats-card">
                     <span class="stats-number">100%</span>
-                    <span class="stats-label">Satisfaction Rate</span>
+                    <span class="stats-label">Tỷ Lệ Hài Lòng</span>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- CTA SECTION -->
+<!-- PHẦN CTA -->
 @if (!User.Identity.IsAuthenticated)
 {
     <section class="cta-section">
         <div class="container">
-            <h2>Ready to Start Your Journey?</h2>
-            <p>Join thousands of satisfied guests and book your perfect stay today</p>
+            <h2>Sẵn Sàng Bắt Đầu Hành Trình Của Bạn?</h2>
+            <p>Gia nhập hàng ngàn khách hàng hài lòng và đặt phòng hoàn hảo ngay hôm nay</p>
             <div class="d-flex justify-content-center gap-3 flex-wrap">
                 <a asp-controller="Account" asp-action="Register" class="btn btn-light-cta btn-lg">
-                    Create Account
+                    Tạo Tài Khoản
                 </a>
                 <a asp-controller="Rooms" asp-action="Search" class="btn btn-outline-light btn-lg">
-                    Browse Rooms
+                    Xem Các Phòng
                 </a>
             </div>
         </div>
@@ -181,14 +179,14 @@ else if (User.IsInRole("Customer"))
 {
     <section class="cta-section">
         <div class="container">
-            <h2>Welcome Back, @User.Identity.Name!</h2>
-            <p>Ready to plan your next adventure?</p>
+            <h2>Chào Mừng Quay Lại, @User.Identity.Name!</h2>
+            <p>Sẵn sàng lên kế hoạch cho chuyến phiêu lưu tiếp theo của bạn?</p>
             <div class="d-flex justify-content-center gap-3 flex-wrap">
                 <a asp-controller="Rooms" asp-action="Search" class="btn btn-light-cta btn-lg">
-                    Book a Room
+                    Đặt Phòng
                 </a>
                 <a asp-controller="Bookings" asp-action="Index" class="btn btn-outline-light btn-lg">
-                    My Bookings
+                    Các Đặt Phòng Của Tôi
                 </a>
             </div>
         </div>
@@ -198,16 +196,16 @@ else if (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("St
 {
     <section class="cta-section" style="background: linear-gradient(135deg, #6610f2 0%, #6f42c1 100%);">
         <div class="container">
-            <h2>Management Portal</h2>
-            <p>Access administrative tools and booking management</p>
+            <h2>Cổng Quản Lý</h2>
+            <p>Truy cập công cụ quản trị và quản lý đặt phòng</p>
             <div class="d-flex justify-content-center gap-3 flex-wrap">
                 <a asp-controller="BookingManagement" asp-action="Index" class="btn btn-light-cta btn-lg">
-                    Manage Bookings
+                    Quản Lý Đặt Phòng
                 </a>
                 @if (User.IsInRole("Admin"))
                 {
                     <a asp-controller="Users" asp-action="Index" class="btn btn-outline-light btn-lg">
-                        User Management
+                        Quản Lý Người Dùng
                     </a>
                 }
             </div>

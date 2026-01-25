@@ -1,24 +1,24 @@
 ﻿@model HotelManagementMVC.Models.SearchRoomsViewModel
 
 @{
-    ViewData["Title"] = "Search Rooms";
+    ViewData["Title"] = "Tìm Phòng";
 }
 
 <div class="row justify-content-center">
     <div class="col-md-8">
-        <h2 class="mb-4 text-center">Search Available Rooms</h2>
+        <h2 class="mb-4 text-center">Tìm Phòng Sẵn Có</h2>
 
         <div class="card shadow-sm mb-4">
             <div class="card-body">
                 <form asp-action="Search" method="post">
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label asp-for="CheckIn" class="form-label">Check-in Date</label>
+                            <label asp-for="CheckIn" class="form-label">Ngày Nhận Phòng</label>
                             <input asp-for="CheckIn" class="form-control" type="date" />
                             <span asp-validation-for="CheckIn" class="text-danger"></span>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label asp-for="CheckOut" class="form-label">Check-out Date</label>
+                            <label asp-for="CheckOut" class="form-label">Ngày Trả Phòng</label>
                             <input asp-for="CheckOut" class="form-control" type="date" />
                             <span asp-validation-for="CheckOut" class="text-danger"></span>
                         </div>
@@ -26,14 +26,14 @@
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label asp-for="RoomTypeId" class="form-label">Room Type (Optional)</label>
+                            <label asp-for="RoomTypeId" class="form-label">Loại Phòng (Tùy Chọn)</label>
                             <select asp-for="RoomTypeId" asp-items="Model.RoomTypes" class="form-select">
-                                <option value="">-- All Types --</option>
+                                <option value="">-- Tất Cả Loại Phòng --</option>
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label asp-for="RoomNumber" class="form-label">Room Number (Optional)</label>
-                            <input asp-for="RoomNumber" class="form-control" placeholder="e.g. 101" />
+                            <label asp-for="RoomNumber" class="form-label">Số Phòng (Tùy Chọn)</label>
+                            <input asp-for="RoomNumber" class="form-control" placeholder="Ví dụ: 101" />
                         </div>
                     </div>
 
@@ -50,7 +50,7 @@
                     }
 
                     <div class="d-grid mt-3">
-                        <button type="submit" class="btn btn-primary btn-lg">Search Available Rooms</button>
+                        <button type="submit" class="btn btn-primary btn-lg">Tìm Phòng Sẵn Có</button>
                     </div>
                 </form>
             </div>
@@ -61,18 +61,18 @@
 @if (Model.Results != null && Model.Results.Count > 0)
 {
     <hr class="my-5" />
-    <h3 class="mb-3">Available Rooms (@Model.Results.Count)</h3>
+    <h3 class="mb-3">Các Phòng Sẵn Có (@Model.Results.Count)</h3>
 
     <div class="table-responsive">
         <table class="table table-hover table-bordered">
             <thead class="table-light">
                 <tr>
-                    <th style="width:140px;">Image</th>
-                    <th>Room Number</th>
-                    <th>Type</th>
-                    <th class="text-center" style="width:90px;">Max</th>
-                    <th>Price / Night</th>
-                    <th class="text-center" style="width:240px;">Action</th>
+                    <th style="width:140px;">Hình Ảnh</th>
+                    <th>Số Phòng</th>
+                    <th>Loại Phòng</th>
+                    <th class="text-center" style="width:90px;">Sức Chứa</th>
+                    <th>Giá / Đêm</th>
+                    <th class="text-center" style="width:240px;">Hành Động</th>
                 </tr>
             </thead>
 
@@ -88,7 +88,7 @@
                             }
                             else
                             {
-                                <div class="text-muted small">No image</div>
+                                <div class="text-muted small">Không có hình ảnh</div>
                             }
                         </td>
 
@@ -102,7 +102,7 @@
                                asp-action="Details"
                                asp-route-id="@r.RoomId"
                                class="btn btn-outline-primary btn-sm me-2">
-                                View Details
+                                Xem Chi Tiết
                             </a>
 
                             <a asp-controller="Bookings"
@@ -111,7 +111,7 @@
                                asp-route-checkIn="@Model.CheckIn.ToString("yyyy-MM-dd")"
                                asp-route-checkOut="@Model.CheckOut.ToString("yyyy-MM-dd")"
                                class="btn btn-success btn-sm px-4">
-                                Book Now
+                                Đặt Ngay
                             </a>
                         </td>
                     </tr>
@@ -123,13 +123,13 @@
 else if (Context.Request.Method == "POST")
 {
     <div class="alert alert-warning text-center mt-4">
-        No rooms found matching your criteria. Please try different dates.
+        Không tìm thấy phòng phù hợp với tiêu chí của bạn. Vui lòng thử với ngày khác.
     </div>
 }
 else
 {
     <div class="alert alert-info text-center mt-4">
-        Please enter check-in/check-out dates and click Search.
+        Vui lòng nhập ngày nhận phòng và ngày trả phòng rồi nhấn Tìm Kiếm.
     </div>
 }
 

@@ -1,6 +1,6 @@
 ﻿@model HotelManagementMVC.Models.RegisterViewModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Đăng Ký";
     Layout = "_Layout";
 }
 
@@ -9,48 +9,48 @@
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <div class="auth-split-screen">
-                    <!-- LEFT SIDE - Promotional Content -->
+                    <!-- BÊN TRÁI - Nội dung quảng cáo -->
                     <div class="auth-left">
                         <div class="auth-left-content">
-                            <h2>Welcome to HotelManagement</h2>
-                            <p>Join our community and experience the best hotel booking service</p>
-                            
+                            <h2>Chào Mừng Bạn Đến Với HotelManagement</h2>
+                            <p>Tham gia cộng đồng của chúng tôi và trải nghiệm dịch vụ đặt phòng khách sạn tốt nhất</p>
+
                             <ul class="feature-list">
-                                <li>Quick and easy booking process</li>
-                                <li>Secure payment with VNPay & Wallet</li>
-                                <li>24/7 customer support</li>
-                                <li>Best price guarantee</li>
-                                <li>Instant booking confirmation</li>
+                                <li>Quy trình đặt phòng nhanh chóng và dễ dàng</li>
+                                <li>Thanh toán an toàn với VNPay & Ví điện tử</li>
+                                <li>Hỗ trợ khách hàng 24/7</li>
+                                <li>Đảm bảo giá tốt nhất</li>
+                                <li>Xác nhận đặt phòng ngay lập tức</li>
                             </ul>
 
                             <div class="mt-5">
-                                <p class="mb-2"><strong>Already have an account?</strong></p>
+                                <p class="mb-2"><strong>Đã có tài khoản?</strong></p>
                                 <a asp-action="Login" class="btn btn-outline-light btn-lg">
-                                    Sign In
+                                    Đăng Nhập
                                 </a>
                             </div>
                         </div>
                     </div>
 
-                    <!-- RIGHT SIDE - Registration Form -->
+                    <!-- BÊN PHẢI - Mẫu Đăng Ký -->
                     <div class="auth-right">
-                        <h3>Create Account</h3>
-                        <p class="subtitle">Fill in your details to get started</p>
+                        <h3>Tạo Tài Khoản</h3>
+                        <p class="subtitle">Điền thông tin của bạn để bắt đầu</p>
 
                         <form method="post" class="auth-form">
-                            
+
 
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label asp-for="FullName">Full Name</label>
+                                        <label asp-for="FullName">Họ Tên</label>
                                         <input type="text" asp-for="FullName" class="form-control" placeholder="John Doe" />
                                         <span asp-validation-for="FullName" class="text-danger small"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label asp-for="PhoneNumber">Phone Number</label>
+                                        <label asp-for="PhoneNumber">Số Điện Thoại</label>
                                         <input type="text" asp-for="PhoneNumber" class="form-control" placeholder="+84 123 456 789" />
                                         <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
                                     </div>
@@ -58,13 +58,13 @@
                             </div>
 
                             <div class="form-group">
-                                <label asp-for="Email">Email Address</label>
+                                <label asp-for="Email">Địa Chỉ Email</label>
                                 <input asp-for="Email" class="form-control" placeholder="name@example.com" />
                                 <span asp-validation-for="Email" class="text-danger small"></span>
                             </div>
 
                             <div class="form-group">
-                                <label asp-for="Username">Username</label>
+                                <label asp-for="Username">Tên Người Dùng</label>
                                 <input type="text" asp-for="Username" class="form-control" placeholder="johndoe" />
                                 <span asp-validation-for="Username" class="text-danger small"></span>
                             </div>
@@ -72,14 +72,14 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label asp-for="Password">Password</label>
+                                        <label asp-for="Password">Mật Khẩu</label>
                                         <input type="password" asp-for="Password" class="form-control" placeholder="••••••••" />
                                         <span asp-validation-for="Password" class="text-danger small"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label asp-for="ConfirmPassword">Confirm Password</label>
+                                        <label asp-for="ConfirmPassword">Xác Nhận Mật Khẩu</label>
                                         <input type="password" asp-for="ConfirmPassword" class="form-control" placeholder="••••••••" />
                                         <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
                                     </div>
@@ -90,18 +90,18 @@
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="terms" required>
                                     <label class="form-check-label" for="terms">
-                                        I agree to the <a href="#" class="text-decoration-none">Terms & Conditions</a>
+                                        Tôi đồng ý với <a href="#" class="text-decoration-none">Điều Khoản & Điều Kiện</a>
                                     </label>
                                 </div>
                             </div>
 
                             <button type="submit" class="btn btn-auth">
-                                Create Account
+                                Tạo Tài Khoản
                             </button>
 
                             <div class="auth-footer">
-                                Already have an account? 
-                                <a asp-action="Login">Sign in here</a>
+                                Đã có tài khoản?
+                                <a asp-action="Login">Đăng nhập ngay</a>
                             </div>
                         </form>
                     </div>
@@ -112,5 +112,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

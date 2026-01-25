@@ -1,14 +1,14 @@
 ﻿@model HotelManagementMVC.Models.RoomFormViewModel
 
 @{
-    ViewData["Title"] = "Edit Room";
+    ViewData["Title"] = Model.Id == 0 ? "Tạo Phòng" : "Chỉnh Sửa Phòng";
 }
 
 <div class="container mt-4">
     <div class="card shadow">
         <div class="card-header bg-primary text-white">
             <h4 class="mb-0">
-                <i class="fas fa-edit"></i> Edit Room
+                <i class="fas fa-edit"></i> Chỉnh Sửa Phòng
             </h4>
         </div>
 
@@ -17,7 +17,7 @@
                 @if (ViewData.ModelState.ErrorCount > 0)
                 {
                     <div class="alert alert-danger">
-                        <strong>Please fix the following errors:</strong>
+                        <strong>Vui lòng sửa các lỗi sau:</strong>
                         <ul class="mb-0 mt-2">
                             @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
                             {
@@ -32,19 +32,19 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label asp-for="RoomNumber" class="form-label fw-bold">
-                            Room Number <span class="text-danger">*</span>
+                            Số Phòng <span class="text-danger">*</span>
                         </label>
                         <input asp-for="RoomNumber" class="form-control"
-                               placeholder="Enter room number (e.g., 101)" required />
+                               placeholder="Nhập số phòng (ví dụ: 101)" required />
                         <span asp-validation-for="RoomNumber" class="text-danger"></span>
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <label asp-for="RoomTypeId" class="form-label fw-bold">
-                            Room Type <span class="text-danger">*</span>
+                            Loại Phòng <span class="text-danger">*</span>
                         </label>
                         <select asp-for="RoomTypeId" asp-items="Model.RoomTypes" class="form-select" required>
-                            <option value="">-- Select Room Type --</option>
+                            <option value="">-- Chọn Loại Phòng --</option>
                         </select>
                         <span asp-validation-for="RoomTypeId" class="text-danger"></span>
                     </div>
@@ -53,40 +53,40 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label asp-for="Status" class="form-label fw-bold">
-                            Status <span class="text-danger">*</span>
+                            Trạng Thái <span class="text-danger">*</span>
                         </label>
                         <select asp-for="Status" asp-items="Model.StatusOptions" class="form-select" required></select>
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <label asp-for="MaxOccupancy" class="form-label fw-bold">
-                            Max Occupancy <span class="text-danger">*</span>
+                            Sức Chứa Tối Đa <span class="text-danger">*</span>
                         </label>
                         <input asp-for="MaxOccupancy" type="number" min="1" max="50" class="form-control"
-                               placeholder="Enter max occupancy" required />
+                               placeholder="Nhập sức chứa tối đa" required />
                         <span asp-validation-for="MaxOccupancy" class="text-danger"></span>
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="Description" class="form-label fw-bold">Description</label>
+                    <label asp-for="Description" class="form-label fw-bold">Mô Tả</label>
                     <textarea asp-for="Description" rows="3" class="form-control"
-                              placeholder="Enter room description (optional)"></textarea>
+                              placeholder="Nhập mô tả phòng (tuỳ chọn)"></textarea>
                 </div>
 
                 <div class="mb-3">
                     <label asp-for="Images" class="form-label fw-bold">
-                        <i class="fas fa-images"></i> Upload New Images (multiple)
+                        <i class="fas fa-images"></i> Tải Lên Hình Ảnh Mới (nhiều ảnh)
                     </label>
                     <input asp-for="Images" type="file" multiple class="form-control" accept="image/*" />
-                    <small class="text-muted">You can select multiple images at once</small>
+                    <small class="text-muted">Bạn có thể chọn nhiều hình ảnh cùng lúc</small>
                 </div>
 
                 @if (Model.ExistingImageUrls != null && Model.ExistingImageUrls.Count > 0)
                 {
                     <div class="mb-3">
                         <label class="form-label fw-bold">
-                            <i class="fas fa-image"></i> Current Images
+                            <i class="fas fa-image"></i> Hình Ảnh Hiện Có
                         </label>
                         <div class="row g-3">
                             @for (int i = 0; i < Model.ExistingImageUrls.Count; i++)
@@ -96,9 +96,9 @@
                                         <img src="@Model.ExistingImageUrls[i]"
                                              class="img-fluid rounded shadow-sm"
                                              style="height: 150px; width: 100%; object-fit: cover;"
-                                             alt="Room Image @(i+1)" />
+                                             alt="Hình Ảnh Phòng @(i + 1)" />
                                         <span class="badge bg-primary position-absolute top-0 start-0 m-2">
-                                            Image @(i+1)
+                                            Hình Ảnh @(i + 1)
                                         </span>
                                     </div>
                                 </div>
@@ -106,7 +106,7 @@
                         </div>
                         <div class="alert alert-warning mt-3 mb-0">
                             <i class="fas fa-exclamation-triangle"></i>
-                            <strong>Note:</strong> Uploading new images will replace all existing images.
+                            <strong>Lưu ý:</strong> Tải lên hình ảnh mới sẽ thay thế tất cả hình ảnh hiện có.
                         </div>
                     </div>
                 }
@@ -115,10 +115,10 @@
             <div class="card-footer bg-light">
                 <div class="d-flex justify-content-end gap-2">
                     <a asp-action="Index" class="btn btn-secondary">
-                        <i class="fas fa-times"></i> Cancel
+                        <i class="fas fa-times"></i> Hủy
                     </a>
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Save Changes
+                        <i class="fas fa-save"></i> Lưu Thay Đổi
                     </button>
                 </div>
             </div>
@@ -130,7 +130,7 @@
     <partial name="_ValidationScriptsPartial" />
 
     <script>
-        // Preview images before upload
+        // Xem trước hình ảnh trước khi tải lên
         document.querySelector('input[type="file"]').addEventListener('change', function (e) {
             const files = e.target.files;
             if (files.length > 0) {

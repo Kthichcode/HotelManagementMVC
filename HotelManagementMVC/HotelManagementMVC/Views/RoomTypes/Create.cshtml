@@ -1,71 +1,71 @@
 ﻿@model HotelManagementMVC.Models.RoomTypeFormViewModel
 
 @{
-    ViewData["Title"] = "Create Room Type";
+    ViewData["Title"] = "Tạo Loại Phòng";
 }
 
 <div class="container mt-4">
     <div class="card shadow">
         <div class="card-header bg-primary text-white">
             <h4 class="mb-0">
-                <i class="fas fa-plus-circle"></i> Create New Room Type
+                <i class="fas fa-plus-circle"></i> Tạo Loại Phòng Mới
             </h4>
         </div>
-        
+
         <form method="post" class="needs-validation" novalidate>
             <div class="card-body">
                 <div class="alert alert-info border-0">
                     <i class="fas fa-info-circle"></i>
-                    <strong>Information:</strong> Fill in the details below to create a new room type for your hotel.
+                    <strong>Thông Tin:</strong> Điền thông tin dưới đây để tạo một loại phòng mới cho khách sạn của bạn.
                 </div>
 
                 <div class="mb-3">
                     <label asp-for="Name" class="form-label fw-bold">
-                        <i class="fas fa-tag"></i> Room Type Name <span class="text-danger">*</span>
+                        <i class="fas fa-tag"></i> Tên Loại Phòng <span class="text-danger">*</span>
                     </label>
-                    <input asp-for="Name" class="form-control form-control-lg" placeholder="e.g., Deluxe Suite, Standard Room, VIP Room" required />
+                    <input asp-for="Name" class="form-control form-control-lg" placeholder="Ví dụ: Phòng Suite, Phòng Standard, Phòng VIP" required />
                     <span asp-validation-for="Name" class="text-danger"></span>
-                    <small class="text-muted">Enter a descriptive name for this room type</small>
+                    <small class="text-muted">Nhập tên mô tả cho loại phòng này</small>
                 </div>
 
                 <div class="mb-3">
                     <label asp-for="PricePerNight" class="form-label fw-bold">
-                        <i class="fas fa-dollar-sign"></i> Price Per Night (VND) <span class="text-danger">*</span>
+                        <i class="fas fa-dollar-sign"></i> Giá Mỗi Đêm (VND) <span class="text-danger">*</span>
                     </label>
                     <div class="input-group input-group-lg">
                         <span class="input-group-text">đ</span>
                         <input asp-for="PricePerNight" class="form-control" type="number" step="1000" min="0" placeholder="0" required />
-                        <span class="input-group-text">/night</span>
+                        <span class="input-group-text">/đêm</span>
                     </div>
                     <span asp-validation-for="PricePerNight" class="text-danger d-block"></span>
-                    <small class="text-muted">Set the base price for one night stay</small>
+                    <small class="text-muted">Đặt giá cơ bản cho một đêm lưu trú</small>
                 </div>
 
                 <div class="mb-3">
                     <label asp-for="Description" class="form-label fw-bold">
-                        <i class="fas fa-align-left"></i> Description
+                        <i class="fas fa-align-left"></i> Mô Tả
                     </label>
-                    <textarea asp-for="Description" class="form-control" rows="5" placeholder="Enter detailed description of this room type including amenities, features, and highlights..."></textarea>
-                    <small class="text-muted">Provide details about features, amenities, and what makes this room type special</small>
+                    <textarea asp-for="Description" class="form-control" rows="5" placeholder="Nhập mô tả chi tiết cho loại phòng này bao gồm tiện nghi, đặc điểm và điểm nổi bật..."></textarea>
+                    <small class="text-muted">Cung cấp chi tiết về tiện nghi, đặc điểm và lý do loại phòng này đặc biệt</small>
                 </div>
 
                 <div class="alert alert-warning border-0 mb-0">
                     <i class="fas fa-exclamation-triangle"></i>
-                    <strong>Note:</strong> Once created, you can edit these details anytime from the room types management page.
+                    <strong>Lưu ý:</strong> Sau khi tạo, bạn có thể chỉnh sửa thông tin này bất cứ lúc nào từ trang quản lý loại phòng.
                 </div>
             </div>
 
             <div class="card-footer bg-light">
                 <div class="d-flex justify-content-between align-items-center">
                     <a asp-action="Index" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Back to List
+                        <i class="fas fa-arrow-left"></i> Quay Lại Danh Sách
                     </a>
                     <div class="d-flex gap-2">
                         <button type="reset" class="btn btn-outline-secondary">
-                            <i class="fas fa-redo"></i> Reset Form
+                            <i class="fas fa-redo"></i> Đặt Lại Form
                         </button>
                         <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="fas fa-save"></i> Create Room Type
+                            <i class="fas fa-save"></i> Tạo Loại Phòng
                         </button>
                     </div>
                 </div>
@@ -76,18 +76,18 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    
+
     <script>
-        // Format currency input
+        // Định dạng lại nhập liệu giá trị tiền
         const priceInput = document.querySelector('input[name="PricePerNight"]');
-        
+
         priceInput.addEventListener('blur', function() {
             if (this.value) {
                 this.value = Math.round(parseFloat(this.value) / 1000) * 1000;
             }
         });
 
-        // Form validation feedback
+        // Phản hồi khi form được xác thực
         const form = document.querySelector('form');
         form.addEventListener('submit', function(e) {
             if (!form.checkValidity()) {
@@ -97,7 +97,7 @@
             form.classList.add('was-validated');
         });
 
-        // Reset button functionality
+        // Chức năng nút reset form
         const resetBtn = document.querySelector('button[type="reset"]');
         resetBtn.addEventListener('click', function() {
             form.classList.remove('was-validated');

@@ -1,6 +1,6 @@
-@model List<BusinessObjects.Entities.Booking>
+﻿@model List<BusinessObjects.Entities.Booking>
 
-<h2>My Bookings</h2>
+<h2>Các Đặt Phòng Của Tôi</h2>
 
 @if (TempData["SuccessMessage"] != null)
 {
@@ -15,12 +15,12 @@
     <thead>
         <tr>
             <th>ID</th>
-            <th>Room</th>
-            <th>Check-In</th>
-            <th>Check-Out</th>
-            <th>Total</th>
-            <th>Status</th>
-            <th>Actions</th>
+            <th>Phòng</th>
+            <th>Ngày Nhận Phòng</th>
+            <th>Ngày Trả Phòng</th>
+            <th>Tổng Số Tiền</th>
+            <th>Trạng Thái</th>
+            <th>Hành Động</th>
         </tr>
     </thead>
     <tbody>
@@ -40,37 +40,37 @@
                 <td>@item.CheckOutDate.ToShortDateString()</td>
                 <td>@item.TotalAmount.ToString("N0")</td>
 
-                <!-- STATUS -->
+                <!-- TRẠNG THÁI -->
                 <td>
                     @switch (item.Status)
                     {
                         case BusinessObjects.Enums.BookingStatus.Pending:
-                            <span class="badge bg-warning text-dark">Pending</span>
+                            <span class="badge bg-warning text-dark">Đang Chờ</span>
                             break;
 
                         case BusinessObjects.Enums.BookingStatus.Confirmed:
-                            <span class="badge bg-info">Confirmed</span>
+                            <span class="badge bg-info">Đã Xác Nhận</span>
                             break;
 
                         case BusinessObjects.Enums.BookingStatus.CheckedIn:
-                            <span class="badge bg-primary">Checked In</span>
+                            <span class="badge bg-primary">Đã Nhận Phòng</span>
                             break;
 
                         case BusinessObjects.Enums.BookingStatus.Completed:
-                            <span class="badge bg-success">Completed</span>
+                            <span class="badge bg-success">Hoàn Thành</span>
                             break;
 
                         case BusinessObjects.Enums.BookingStatus.Cancelled:
-                            <span class="badge bg-danger">Cancelled</span>
+                            <span class="badge bg-danger">Đã Hủy</span>
                             break;
 
                         default:
-                            <span class="badge bg-dark">Unknown</span>
+                            <span class="badge bg-dark">Không Xác Định</span>
                             break;
                     }
                 </td>
 
-                <!-- ACTIONS -->
+                <!-- HÀNH ĐỘNG -->
                 <td>
                     @if (item.Status == BusinessObjects.Enums.BookingStatus.Pending
                                     || item.Status == BusinessObjects.Enums.BookingStatus.Confirmed)
@@ -78,14 +78,14 @@
                         <form asp-action="Cancel"
                               method="post"
                               style="display:inline"
-                              onsubmit="return confirm('Are you sure?');">
+                              onsubmit="return confirm('Bạn có chắc chắn không?');">
                             <input type="hidden" name="id" value="@item.Id" />
-                            <button class="btn btn-sm btn-danger">Cancel</button>
+                            <button class="btn btn-sm btn-danger">Hủy</button>
                         </form>
                     }
                     else
                     {
-                        <span class="text-muted">�</span>
+                        <span class="text-muted">—</span>
                     }
                 </td>
             </tr>

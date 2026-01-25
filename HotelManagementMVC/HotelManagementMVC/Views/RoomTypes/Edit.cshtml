@@ -1,50 +1,50 @@
 ﻿@model HotelManagementMVC.Models.RoomTypeFormViewModel
 
 @{
-    ViewData["Title"] = "Edit Room Type";
+    ViewData["Title"] = "Chỉnh Sửa Loại Phòng";
 }
 
 <div class="container mt-4">
     <div class="card shadow">
         <div class="card-header bg-primary text-white">
             <h4 class="mb-0">
-                <i class="fas fa-edit"></i> Edit Room Type
+                <i class="fas fa-edit"></i> Chỉnh Sửa Loại Phòng
             </h4>
         </div>
-        
+
         <form method="post" class="needs-validation" novalidate>
             <div class="card-body">
                 <input type="hidden" asp-for="Id" />
 
                 <div class="mb-3">
                     <label asp-for="Name" class="form-label fw-bold">
-                        Name <span class="text-danger">*</span>
+                        Tên Loại Phòng <span class="text-danger">*</span>
                     </label>
-                    <input asp-for="Name" class="form-control" placeholder="Enter room type name" required />
+                    <input asp-for="Name" class="form-control" placeholder="Nhập tên loại phòng" required />
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
                     <label asp-for="PricePerNight" class="form-label fw-bold">
-                        Price Per Night (VND) <span class="text-danger">*</span>
+                        Giá Mỗi Đêm (VND) <span class="text-danger">*</span>
                     </label>
                     <input asp-for="PricePerNight" class="form-control" type="number" step="0.01" min="0" placeholder="0.00" required />
                     <span asp-validation-for="PricePerNight" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="Description" class="form-label fw-bold">Description</label>
-                    <textarea asp-for="Description" class="form-control" rows="4" placeholder="Enter description (optional)"></textarea>
+                    <label asp-for="Description" class="form-label fw-bold">Mô Tả</label>
+                    <textarea asp-for="Description" class="form-control" rows="4" placeholder="Nhập mô tả (tuỳ chọn)"></textarea>
                 </div>
             </div>
 
             <div class="card-footer bg-light">
                 <div class="d-flex justify-content-end gap-2">
                     <a asp-action="Index" class="btn btn-secondary">
-                        <i class="fas fa-times"></i> Cancel
+                        <i class="fas fa-times"></i> Hủy
                     </a>
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Save Changes
+                        <i class="fas fa-save"></i> Lưu Thay Đổi
                     </button>
                 </div>
             </div>

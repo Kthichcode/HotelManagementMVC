@@ -1,17 +1,17 @@
 ﻿@model BusinessObjects.Entities.Room
 
 @{
-    ViewData["Title"] = "Room Details";
+    ViewData["Title"] = "Chi Tiết Phòng";
 }
 
-<h2 class="mb-3">Room @Model.RoomNumber</h2>
+<h2 class="mb-3">Phòng @Model.RoomNumber</h2>
 
-<div class="mb-2"><b>Type:</b> @Model.RoomType?.Name</div>
-<div class="mb-2"><b>Max Occupancy:</b> @Model.MaxOccupancy</div>
+<div class="mb-2"><b>Loại Phòng:</b> @Model.RoomType?.Name</div>
+<div class="mb-2"><b>Sức Chứa Tối Đa:</b> @Model.MaxOccupancy</div>
 
 @if (!string.IsNullOrWhiteSpace(Model.Description))
 {
-    <div class="mb-3"><b>Description:</b> @Model.Description</div>
+    <div class="mb-3"><b>Mô Tả:</b> @Model.Description</div>
 }
 
 @if (Model.RoomImages != null && Model.RoomImages.Count > 0)
@@ -26,9 +26,9 @@
 }
 else
 {
-    <div class="text-muted">No images available.</div>
+    <div class="text-muted">Không có hình ảnh nào.</div>
 }
 
 <div class="mt-4">
-    <a asp-action="Search" class="btn btn-secondary">Back to Search</a>
+    <a asp-action="Search" class="btn btn-secondary">Quay lại Tìm Kiếm</a>
 </div>

@@ -1,14 +1,14 @@
 ﻿@model List<BusinessObjects.Entities.RoomType>
 
 @{
-    ViewData["Title"] = "Room Types Management";
+    ViewData["Title"] = "Quản Lý Loại Phòng";
 }
 
 <div class="container-fluid mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="fas fa-th-large"></i> Room Types Management</h2>
+        <h2><i class="fas fa-th-large"></i> Quản Lý Loại Phòng</h2>
         <button type="button" class="btn btn-primary" onclick="openCreateModal()">
-            <i class="fas fa-plus"></i> Create New Room Type
+            <i class="fas fa-plus"></i> Tạo Loại Phòng Mới
         </button>
     </div>
 
@@ -17,10 +17,10 @@
             <table class="table table-hover table-striped mb-0">
                 <thead class="bg-light">
                     <tr>
-                        <th class="ps-4" width="30%">Name</th>
-                        <th width="20%">Price/Night</th>
-                        <th width="35%">Description</th>
-                        <th class="text-end pe-4" width="15%">Actions</th>
+                        <th class="ps-4" width="30%">Tên</th>
+                        <th width="20%">Giá/Đêm</th>
+                        <th width="35%">Mô Tả</th>
+                        <th class="text-end pe-4" width="15%">Hành Động</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -32,12 +32,12 @@
                             <td class="text-muted">@t.Description</td>
                             <td class="text-end pe-4">
                                 <a href="/RoomTypes/Edit/@t.Id" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-edit"></i> Edit
+                                    <i class="fas fa-edit"></i> Chỉnh Sửa
                                 </a>
-                                <form asp-action="Delete" method="post" style="display:inline;" onsubmit="return confirm('Are you sure?');">
+                                <form asp-action="Delete" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn không?');">
                                     <input type="hidden" name="id" value="@t.Id" />
                                     <button type="submit" class="btn btn-sm btn-outline-danger">
-                                        <i class="fas fa-trash"></i> Delete
+                                        <i class="fas fa-trash"></i> Xóa
                                     </button>
                                 </form>
                             </td>
@@ -49,36 +49,36 @@
     </div>
 </div>
 
-<!-- Modal Create Room Type -->
+<!-- Modal Tạo Loại Phòng -->
 <div id="roomTypeModal" class="modal-overlay">
     <div class="modal-container">
         <div class="modal-header-custom">
-            <h3>Create Room Type</h3>
+            <h3>Tạo Loại Phòng</h3>
             <button type="button" class="modal-close-btn" onclick="closeModal()">&times;</button>
         </div>
-        
+
         <form method="post" action="/RoomTypes/Create">
             <div class="modal-body-custom">
                 <div class="modal-form-group">
-                    <label for="Name">Name <span class="required">*</span></label>
-                    <input type="text" id="Name" name="Name" required placeholder="Enter room type name" />
+                    <label for="Name">Tên <span class="required">*</span></label>
+                    <input type="text" id="Name" name="Name" required placeholder="Nhập tên loại phòng" />
                 </div>
 
                 <div class="modal-form-group">
-                    <label for="PricePerNight">Price Per Night (VND) <span class="required">*</span></label>
+                    <label for="PricePerNight">Giá Mỗi Đêm (VND) <span class="required">*</span></label>
                     <input type="number" id="PricePerNight" name="PricePerNight" step="0.01" min="0" required placeholder="0.00" />
                 </div>
 
                 <div class="modal-form-group">
-                    <label for="Description">Description</label>
-                    <textarea id="Description" name="Description" placeholder="Enter description (optional)"></textarea>
+                    <label for="Description">Mô Tả</label>
+                    <textarea id="Description" name="Description" placeholder="Nhập mô tả (tuỳ chọn)"></textarea>
                 </div>
             </div>
 
             <div class="modal-footer-custom">
-                <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Hủy</button>
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Save
+                    <i class="fas fa-save"></i> Lưu
                 </button>
             </div>
         </form>
@@ -98,7 +98,7 @@
             document.getElementById('roomTypeModal').classList.remove('active');
         }
 
-        // Close modal when clicking outside
+        // Đóng modal khi nhấn ra ngoài
         document.getElementById('roomTypeModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeModal();

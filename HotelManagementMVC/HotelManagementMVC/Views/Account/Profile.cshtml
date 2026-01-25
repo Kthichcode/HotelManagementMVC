@@ -1,6 +1,6 @@
 ﻿@model HotelManagementMVC.Models.ProfileViewModel
 
-<h2>My Profile</h2>
+<h2>Hồ Sơ Của Tôi</h2>
 
 @if (ViewBag.Message != null)
 {
@@ -18,7 +18,7 @@
     @Html.AntiForgeryToken()
 
     <div class="mb-3">
-        <label>Username</label>
+        <label>Tên Người Dùng</label>
         <input class="form-control" value="@Model.UserName" disabled />
     </div>
 
@@ -28,17 +28,17 @@
     </div>
 
     <div class="mb-3">
-        <label>Full Name</label>
+        <label>Họ Tên</label>
         <input class="form-control" asp-for="FullName" />
         <span asp-validation-for="FullName" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label>Phone</label>
+        <label>Số Điện Thoại</label>
         <input class="form-control" asp-for="PhoneNumber" />
     </div>
 
-    <button class="btn btn-primary" type="submit">Save</button>
+    <button class="btn btn-primary" type="submit">Lưu</button>
 </form>
 
 @section Scripts {
