@@ -2,11 +2,11 @@
 
 <h2>My Bookings</h2>
 
-@if(TempData["SuccessMessage"] != null)
+@if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-success">@TempData["SuccessMessage"]</div>
 }
-@if(TempData["Error"] != null)
+@if (TempData["Error"] != null)
 {
     <div class="alert alert-danger">@TempData["Error"]</div>
 }
@@ -24,43 +24,68 @@
         </tr>
     </thead>
     <tbody>
-        @foreach(var item in Model)
+        @foreach (var item in Model)
         {
             <tr>
                 <td>@item.Id</td>
+
                 <td>
-                    @foreach(var br in item.BookingRooms)
+                    @foreach (var br in item.BookingRooms)
                     {
                         <span class="badge bg-secondary">@br.Room?.RoomNumber</span>
                     }
                 </td>
+
                 <td>@item.CheckInDate.ToShortDateString()</td>
                 <td>@item.CheckOutDate.ToShortDateString()</td>
                 <td>@item.TotalAmount.ToString("N0")</td>
+
+                <!-- STATUS -->
                 <td>
-                    @switch(item.Status)
+                    @switch (item.Status)
                     {
                         case BusinessObjects.Enums.BookingStatus.Pending:
                             <span class="badge bg-warning text-dark">Pending</span>
                             break;
+
                         case BusinessObjects.Enums.BookingStatus.Confirmed:
                             <span class="badge bg-info">Confirmed</span>
                             break;
-                        case BusinessObjects.Enums.BookingStatus.Cancelled:
-                             <span class="badge bg-danger">Cancelled</span>
+
+                        case BusinessObjects.Enums.BookingStatus.CheckedIn:
+                            <span class="badge bg-primary">Checked In</span>
                             break;
+
                         case BusinessObjects.Enums.BookingStatus.Completed:
-                             <span class="badge bg-success">Completed</span>
+                            <span class="badge bg-success">Completed</span>
+                            break;
+
+                        case BusinessObjects.Enums.BookingStatus.Cancelled:
+                            <span class="badge bg-danger">Cancelled</span>
+                            break;
+
+                        default:
+                            <span class="badge bg-dark">Unknown</span>
                             break;
                     }
                 </td>
+
+                <!-- ACTIONS -->
                 <td>
-                    @if(item.Status == BusinessObjects.Enums.BookingStatus.Pending || item.Status == BusinessObjects.Enums.BookingStatus.Confirmed)
+                    @if (item.Status == BusinessObjects.Enums.BookingStatus.Pending
+                                    || item.Status == BusinessObjects.Enums.BookingStatus.Confirmed)
                     {
-                        <form asp-action="Cancel" method="post" style="display:inline" onsubmit="return confirm('Are you sure?');">
+                        <form asp-action="Cancel"
+                              method="post"
+                              style="display:inline"
+                              onsubmit="return confirm('Are you sure?');">
                             <input type="hidden" name="id" value="@item.Id" />
                             <button class="btn btn-sm btn-danger">Cancel</button>
                         </form>
+                    }
+                    else
+                    {
+                        <span class="text-muted">—</span>
                     }
                 </td>
             </tr>
