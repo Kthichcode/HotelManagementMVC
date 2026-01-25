@@ -1,0 +1,143 @@
+﻿using BusinessObjects;
+using Microsoft.AspNetCore.Identity;
+
+namespace HotelManagementMVC.Data
+{
+    public static class DbSeeder
+    {
+        public static async Task SeedAsync(IServiceProvider services)
+        {
+            using var scope = services.CreateScope();
+
+            var roleMgr = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userMgr = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+            // 1) Seed roles
+            string[] roles = { "Admin", "Staff", "Manager", "Customer" };
+
+            foreach (var role in roles)
+            {
+                if (!await roleMgr.RoleExistsAsync(role))
+                {
+                    var roleResult = await roleMgr.CreateAsync(new IdentityRole(role));
+                    if (!roleResult.Succeeded)
+                    {
+                        throw new Exception($"Create role '{role}' failed: " +
+                            string.Join("; ", roleResult.Errors.Select(e => e.Description)));
+                    }
+                }
+            }
+
+            // 2) Seed admin account (login by username)
+            var adminUsername = "Admin";
+            var admin = await userMgr.FindByNameAsync(adminUsername);
+
+            if (admin == null)
+            {
+                admin = new ApplicationUser
+                {
+                    UserName = adminUsername,
+                    Email = "admin@hotel.com", // email hợp lệ để tránh fail validate
+                    FullName = "System Admin"
+                };
+
+                var createUser = await userMgr.CreateAsync(admin, "Admin@123");
+                if (!createUser.Succeeded)
+                {
+                    throw new Exception("Create admin failed: " +
+                        string.Join("; ", createUser.Errors.Select(e => e.Description)));
+                }
+
+                var addRole = await userMgr.AddToRoleAsync(admin, "Admin");
+                if (!addRole.Succeeded)
+                {
+                    throw new Exception("Add admin role failed: " +
+                        string.Join("; ", addRole.Errors.Select(e => e.Description)));
+                }
+            }
+            else
+            {
+                // Nếu user đã tồn tại nhưng chưa có role Admin thì add vào cho chắc
+                if (!await userMgr.IsInRoleAsync(admin, "Admin"))
+                {
+                    var addRole = await userMgr.AddToRoleAsync(admin, "Admin");
+                    if (!addRole.Succeeded)
+                    {
+                        throw new Exception("Add admin role failed: " +
+                            string.Join("; ", addRole.Errors.Select(e => e.Description)));
+                    }
+                }
+            }
+
+            // 3) Seed manager account
+            var managerUsername = "Manager";
+            var manager = await userMgr.FindByNameAsync(managerUsername);
+
+            if (manager == null)
+            {
+                manager = new ApplicationUser
+                {
+                    UserName = managerUsername,
+                    Email = "manager@hotel.com",
+                    FullName = "Hotel Manager"
+                };
+
+                var createMgr = await userMgr.CreateAsync(manager, "Manager@123");
+                if (!createMgr.Succeeded)
+                {
+                    throw new Exception("Create manager failed: " +
+                        string.Join("; ", createMgr.Errors.Select(e => e.Description)));
+                }
+
+                var addRole = await userMgr.AddToRoleAsync(manager, "Manager");
+                if (!addRole.Succeeded)
+                {
+                    throw new Exception("Add manager role failed: " +
+                        string.Join("; ", addRole.Errors.Select(e => e.Description)));
+                }
+            }
+            else
+            {
+                if (!await userMgr.IsInRoleAsync(manager, "Manager"))
+                {
+                    await userMgr.AddToRoleAsync(manager, "Manager");
+                }
+            }
+
+            // 4) Seed staff account
+            var staffUsername = "Staff";
+            var staff = await userMgr.FindByNameAsync(staffUsername);
+
+            if (staff == null)
+            {
+                staff = new ApplicationUser
+                {
+                    UserName = staffUsername,
+                    Email = "staff@hotel.com",
+                    FullName = "Hotel Staff"
+                };
+
+                var createStaff = await userMgr.CreateAsync(staff, "Staff@123");
+                if (!createStaff.Succeeded)
+                {
+                    throw new Exception("Create staff failed: " +
+                        string.Join("; ", createStaff.Errors.Select(e => e.Description)));
+                }
+
+                var addRole = await userMgr.AddToRoleAsync(staff, "Staff");
+                if (!addRole.Succeeded)
+                {
+                    throw new Exception("Add staff role failed: " +
+                        string.Join("; ", addRole.Errors.Select(e => e.Description)));
+                }
+            }
+            else
+            {
+                if (!await userMgr.IsInRoleAsync(staff, "Staff"))
+                {
+                    await userMgr.AddToRoleAsync(staff, "Staff");
+                }
+            }
+        }
+    }
+}

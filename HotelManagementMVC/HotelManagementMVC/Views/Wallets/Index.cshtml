@@ -1,0 +1,139 @@
+@model BusinessObjects.Entities.Wallet
+
+@{
+    ViewData["Title"] = "Ví Của Tôi";
+}
+
+<div class="container mt-4">
+    <!-- Wallet Balance Card -->
+    <div class="card shadow-lg mb-4" style="border-radius: 20px; overflow: hidden; border: 2px solid #e0e0e0;">
+        <div class="card-header text-white" style="background: linear-gradient(135deg, #0066cc 0%, #3385d6 100%); padding: 30px;">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h3 class="mb-1">
+                        <i class="fas fa-wallet"></i> Ví Của Tôi
+                    </h3>
+                    <p class="mb-0 opacity-75">@Model.User?.FullName</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <small class="d-block opacity-75">Số Dư Hiện Tại</small>
+                    <h1 class="display-4 mb-0 fw-bold">@Model.Balance.ToString("N0")đ</h1>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-4">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="p-3 rounded" style="background: #fafafa; border: 2px solid #e0e0e0;">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <i class="fas fa-credit-card fa-2x" style="color: #0066cc;"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted">Mã Ví</small>
+                                <div class="fw-bold" style="color: #0066cc;">@Model.Id</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-3 rounded" style="background: #fafafa; border: 2px solid #e0e0e0;">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <i class="fas fa-user-circle fa-2x text-success"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted">Trạng Thái Tài Khoản</small>
+                                <div class="fw-bold text-success">
+                                    <i class="fas fa-check-circle"></i> Đang Hoạt Động
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm hover-lift" style="border: 2px solid #e0e0e0; border-radius: 15px;">
+                <div class="card-body text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-plus-circle fa-3x" style="color: #0066cc;"></i>
+                    </div>
+                    <h5 class="card-title" style="color: #0066cc;">Nạp Tiền</h5>
+                    <p class="card-text text-muted">Thêm tiền vào ví của bạn</p>
+                    <button class="btn btn-dark" disabled style="border-radius: 25px; padding: 10px 25px;">
+                        <i class="fas fa-plus"></i> Sắp Ra Mắt
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm hover-lift" style="border: 2px solid #e0e0e0; border-radius: 15px;">
+                <div class="card-body text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-history fa-3x" style="color: #0066cc;"></i>
+                    </div>
+                    <h5 class="card-title" style="color: #0066cc;">Lịch Sử Giao Dịch</h5>
+                    <p class="card-text text-muted">Xem tất cả giao dịch</p>
+                    <button class="btn btn-dark" disabled style="border-radius: 25px; padding: 10px 25px;">
+                        <i class="fas fa-list"></i> Sắp Ra Mắt
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm hover-lift" style="border: 2px solid #e0e0e0; border-radius: 15px;">
+                <div class="card-body text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-exchange-alt fa-3x" style="color: #0066cc;"></i>
+                    </div>
+                    <h5 class="card-title" style="color: #0066cc;">Chuyển Khoản</h5>
+                    <p class="card-text text-muted">Gửi tiền cho người khác</p>
+                    <button class="btn btn-dark" disabled style="border-radius: 25px; padding: 10px 25px;">
+                        <i class="fas fa-paper-plane"></i> Sắp Ra Mắt
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Alert -->
+    <div class="alert border-0 shadow-sm" style="background: #fafafa; border-left: 5px solid #1a1a1a !important; border-radius: 12px;">
+        <div class="d-flex align-items-start">
+            <i class="fas fa-info-circle fa-2x me-3" style="color: #0066cc;"></i>
+            <div>
+                <h5 class="alert-heading" style="color: #0066cc;">Về Ví Của Bạn</h5>
+                <p class="mb-0" style="color: #666;">
+                    Ví của bạn có thể được sử dụng để thanh toán cho đặt phòng và các dịch vụ khách sạn khác. 
+                    Bạn có thể nạp tiền vào ví bằng nhiều phương thức thanh toán khác nhau bao gồm VNPay.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-lift {
+        transition: all 0.3s ease;
+    }
+    .hover-lift:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+        border-color: #0066cc !important;
+    }
+    
+    .btn-dark {
+        background: #0066cc !important;
+        border: none !important;
+        font-weight: 600;
+    }
+    
+    .btn-dark:hover:not(:disabled) {
+        background: #0052a3 !important;
+        transform: translateY(-2px);
+    }
+</style>

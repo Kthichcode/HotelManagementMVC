@@ -1,0 +1,364 @@
+@model BusinessObjects.Entities.Booking
+
+@{
+    ViewData["Title"] = "Đánh Giá Đặt Phòng";
+    var booking = ViewBag.Booking as BusinessObjects.Entities.Booking;
+}
+
+<style>
+    body {
+        background: #f5f5f5;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .review-wrapper {
+        max-width: 800px;
+        margin: 30px auto;
+        padding: 0 20px;
+    }
+
+    .review-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .review-header {
+        background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+        color: white;
+        padding: 30px 40px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .review-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    }
+
+    .review-header h1 {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 700;
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .review-header h1 i {
+        font-size: 2.2rem;
+    }
+
+    .booking-info-section {
+        padding: 30px 40px;
+        background: #f8f9fa;
+        border-bottom: 2px solid #e0e0e0;
+    }
+
+    .booking-info-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #666;
+        margin-bottom: 15px;
+    }
+
+    .booking-info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+    }
+
+    .booking-info-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .booking-info-item i {
+        color: #0066cc;
+        font-size: 1.2rem;
+    }
+
+    .booking-info-item span {
+        color: #333;
+        font-weight: 500;
+    }
+
+    .review-form-section {
+        padding: 40px;
+    }
+
+    .rating-section {
+        margin-bottom: 30px;
+    }
+
+    .rating-label {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    .star-rating {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .star-input {
+        display: none;
+    }
+
+    .star-label {
+        font-size: 2.5rem;
+        color: #ddd;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .star-label:hover,
+    .star-input:checked ~ .star-label,
+    .star-input:checked ~ .star-label ~ .star-label {
+        color: #ffc107;
+    }
+
+    .star-label:hover ~ .star-label {
+        color: #ffc107;
+    }
+
+    .rating-value {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #0066cc;
+        margin-left: 15px;
+    }
+
+    .comment-section {
+        margin-bottom: 30px;
+    }
+
+    .comment-label {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .comment-textarea {
+        width: 100%;
+        padding: 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-family: inherit;
+        min-height: 150px;
+        resize: vertical;
+        transition: all 0.3s ease;
+    }
+
+    .comment-textarea:focus {
+        outline: none;
+        border-color: #0066cc;
+        box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.15);
+    }
+
+    .form-footer {
+        padding: 25px 40px;
+        background: #f8f9fa;
+        border-top: 1px solid #e0e0e0;
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+    }
+
+    .btn-cancel {
+        background: white;
+        color: #666;
+        border: 2px solid #e0e0e0;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-cancel:hover {
+        background: #f0f0f0;
+        border-color: #ccc;
+        color: #333;
+        transform: translateY(-2px);
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+        color: white;
+        border: none;
+        padding: 12px 35px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+        cursor: pointer;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
+        color: white;
+    }
+
+    .alert-custom {
+        padding: 20px 25px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        font-size: 1rem;
+        font-weight: 500;
+        border: 2px solid;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .alert-danger-custom {
+        background: #f8d7da;
+        border-color: #dc3545;
+        color: #721c24;
+    }
+
+    .alert-success-custom {
+        background: #d4edda;
+        border-color: #28a745;
+        color: #155724;
+    }
+</style>
+
+<div class="review-wrapper">
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert-custom alert-danger-custom">
+            <i class="fas fa-exclamation-circle"></i>
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert-custom alert-success-custom">
+            <i class="fas fa-check-circle"></i>
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="review-card">
+        <div class="review-header">
+            <h1>
+                <i class="fas fa-star"></i> Đánh Giá Đặt Phòng
+            </h1>
+        </div>
+
+        @if (booking != null)
+        {
+            <div class="booking-info-section">
+                <div class="booking-info-title">Thông Tin Đặt Phòng</div>
+                <div class="booking-info-grid">
+                    <div class="booking-info-item">
+                        <i class="fas fa-hashtag"></i>
+                        <span>Mã Đặt Phòng: #@booking.Id</span>
+                    </div>
+                    <div class="booking-info-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>@booking.CheckInDate.ToString("dd/MM/yyyy") - @booking.CheckOutDate.ToString("dd/MM/yyyy")</span>
+                    </div>
+                    <div class="booking-info-item">
+                        <i class="fas fa-door-open"></i>
+                        <span>
+                            @foreach (var br in booking.BookingRooms)
+                            {
+                                <text>@br.Room?.RoomNumber </text>
+                            }
+                        </span>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <form method="post" asp-action="Create">
+            <input type="hidden" name="bookingId" value="@booking?.Id" />
+            
+            <div class="review-form-section">
+                <div class="rating-section">
+                    <label class="rating-label">
+                        <i class="fas fa-star"></i> Đánh Giá (Bắt Buộc)
+                    </label>
+                    <div class="star-rating">
+                        <input type="radio" id="star5" name="rating" value="5" class="star-input" required>
+                        <label for="star5" class="star-label">★</label>
+                        <input type="radio" id="star4" name="rating" value="4" class="star-input">
+                        <label for="star4" class="star-label">★</label>
+                        <input type="radio" id="star3" name="rating" value="3" class="star-input">
+                        <label for="star3" class="star-label">★</label>
+                        <input type="radio" id="star2" name="rating" value="2" class="star-input">
+                        <label for="star2" class="star-label">★</label>
+                        <input type="radio" id="star1" name="rating" value="1" class="star-input">
+                        <label for="star1" class="star-label">★</label>
+                        <span class="rating-value" id="ratingValue">Chọn số sao</span>
+                    </div>
+                </div>
+
+                <div class="comment-section">
+                    <label class="comment-label" for="comment">
+                        <i class="fas fa-comment"></i> Nhận Xét (Tùy Chọn)
+                    </label>
+                    <textarea id="comment" name="comment" class="comment-textarea" 
+                              placeholder="Chia sẻ trải nghiệm của bạn về đặt phòng này..."></textarea>
+                </div>
+            </div>
+
+            <div class="form-footer">
+                <a asp-controller="Bookings" asp-action="Index" class="btn-cancel">
+                    <i class="fas fa-times"></i> Hủy
+                </a>
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-paper-plane"></i> Gửi Đánh Giá
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Cập nhật text khi chọn sao
+        document.querySelectorAll('.star-input').forEach(input => {
+            input.addEventListener('change', function() {
+                const rating = this.value;
+                const ratingText = {
+                    '1': 'Rất Không Hài Lòng',
+                    '2': 'Không Hài Lòng',
+                    '3': 'Bình Thường',
+                    '4': 'Hài Lòng',
+                    '5': 'Rất Hài Lòng'
+                };
+                document.getElementById('ratingValue').textContent = ratingText[rating] || 'Chọn số sao';
+            });
+        });
+    </script>
+}
+

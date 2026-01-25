@@ -1,0 +1,108 @@
+﻿@model HotelManagementMVC.Models.CreateUserViewModel
+
+@{
+    ViewData["Title"] = "Tạo Người Dùng";
+}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">
+                <i class="fas fa-user-plus"></i> Tạo Người Dùng Mới
+            </h4>
+        </div>
+
+        <form asp-action="Create" class="needs-validation" novalidate>
+            <div class="card-body">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <div class="alert alert-info border-0">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Thông Tin:</strong> Tạo tài khoản người dùng mới cho hệ thống quản lý khách sạn.
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Username" class="form-label fw-bold">
+                            <i class="fas fa-user"></i> Tên Đăng Nhập <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Username" class="form-control" placeholder="Nhập tên đăng nhập" required />
+                        <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Email" class="form-label fw-bold">
+                            <i class="fas fa-envelope"></i> Email <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Email" class="form-control" type="email" placeholder="user@example.com" required />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="FullName" class="form-label fw-bold">
+                        <i class="fas fa-id-card"></i> Họ Tên <span class="text-danger">*</span>
+                    </label>
+                    <input asp-for="FullName" class="form-control" placeholder="Nhập họ tên đầy đủ" required />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Password" class="form-label fw-bold">
+                            <i class="fas fa-lock"></i> Mật Khẩu <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Password" type="password" class="form-control" placeholder="••••••••" required />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                        <small class="text-muted">Tối thiểu 6 ký tự</small>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="ConfirmPassword" class="form-label fw-bold">
+                            <i class="fas fa-lock"></i> Xác Nhận Mật Khẩu <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="••••••••" required />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Role" class="form-label fw-bold">
+                        <i class="fas fa-user-shield"></i> Vai Trò <span class="text-danger">*</span>
+                    </label>
+                    <select asp-for="Role" class="form-select form-select-lg" required>
+                        <option value="">-- Chọn Vai Trò --</option>
+                        <option value="Customer">Khách Hàng - Khách lưu trú thông thường</option>
+                        <option value="Staff">Nhân Viên - Nhân viên tiếp tân & dịch vụ</option>
+                        <option value="Manager">Quản Lý - Quản lý phòng ban</option>
+                        <option value="Admin">Quản Trị Viên - Quản lý hệ thống</option>
+                    </select>
+                    <span asp-validation-for="Role" class="text-danger"></span>
+                    <small class="text-muted">Chọn vai trò phù hợp cho người dùng này</small>
+                </div>
+
+                <div class="alert alert-warning border-0">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Lưu ý:</strong> Người dùng sẽ nhận thông tin đăng nhập qua email.
+                </div>
+            </div>
+
+            <div class="card-footer bg-light">
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Quay Lại Danh Sách
+                    </a>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-user-plus"></i> Tạo Người Dùng
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

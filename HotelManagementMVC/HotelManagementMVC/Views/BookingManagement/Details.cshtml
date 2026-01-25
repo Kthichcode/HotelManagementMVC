@@ -1,0 +1,183 @@
+﻿@using BusinessObjects.Enums
+@model BusinessObjects.Entities.Booking
+
+@{
+    ViewData["Title"] = $"Chi Tiết Đặt Phòng #{Model.Id}";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Chi Tiết Đặt Phòng #@Model.Id</h2>
+        <a asp-action="Index" class="btn btn-secondary">Quay lại danh sách</a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+
+    <div class="row">
+        <!-- Thông tin chính -->
+        <div class="col-md-8">
+            <div class="card mb-3 shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Thông Tin Đặt Phòng</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Trạng Thái</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-@GetStatusColor(Model.Status) fs-6">@Model.Status</span>
+                        </dd>
+
+                        <dt class="col-sm-4">Ngày Nhận Phòng</dt>
+                        <dd class="col-sm-8">@Model.CheckInDate.ToString("dd/MM/yyyy")</dd>
+
+                        <dt class="col-sm-4">Ngày Trả Phòng</dt>
+                        <dd class="col-sm-8">@Model.CheckOutDate.ToString("dd/MM/yyyy")</dd>
+
+                        <dt class="col-sm-4">Tổng Số Tiền</dt>
+                        <dd class="col-sm-8 fw-bold text-success">@Model.TotalAmount.ToString("N0") VND</dd>
+
+                        <dt class="col-sm-4">Ngày Tạo</dt>
+                        <dd class="col-sm-8">@Model.CreatedAt.ToString("g")</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Thông Tin Khách Hàng -->
+            <div class="card mb-3 shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Thông Tin Khách Hàng</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Customer != null)
+                    {
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4">Họ Tên</dt>
+                            <dd class="col-sm-8">@Model.Customer.FullName</dd>
+
+                            <dt class="col-sm-4">Email</dt>
+                            <dd class="col-sm-8">@Model.Customer.PhoneNumber</dd>
+
+                            <dt class="col-sm-4">Tên Đăng Nhập</dt>
+                            <dd class="col-sm-8">@Model.Customer.UserName</dd>
+                        </dl>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">Thông tin khách hàng không có sẵn.</p>
+                    }
+                </div>
+            </div>
+
+            <!-- Phòng -->
+            <div class="card mb-3 shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Các Phòng</h5>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>Số Phòng</th>
+                                <th>Loại Phòng</th>
+                                <th>Giá/Đêm</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var br in Model.BookingRooms)
+                            {
+                                <tr>
+                                    <td>@br.Room.RoomNumber</td>
+                                    <td>@(br.Room.RoomType?.Name ?? "Không có")</td>
+                                    <td>@(br.Room.RoomType?.PricePerNight.ToString("N0")) VND</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Thanh Công Cụ Hành Động -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Các Hành Động</h5>
+                </div>
+                <div class="card-body d-grid gap-2">
+
+                    @if (Model.Status == BookingStatus.Pending)
+                    {
+                        <form asp-action="UpdateStatus" method="post">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <input type="hidden" name="newStatus" value="@BookingStatus.Confirmed" />
+                            <button type="submit" class="btn btn-success w-100 mb-2">Xác Nhận Đặt Phòng</button>
+                        </form>
+
+                        <form asp-action="UpdateStatus" method="post" onsubmit="return confirm('Hủy đặt phòng này?');">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <input type="hidden" name="newStatus" value="@BookingStatus.Cancelled" />
+                            <button type="submit" class="btn btn-outline-danger w-100">Hủy Đặt Phòng</button>
+                        </form>
+                    }
+                    else if (Model.Status == BookingStatus.Confirmed)
+                    {
+                        <form asp-action="UpdateStatus" method="post">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <input type="hidden" name="newStatus" value="@BookingStatus.CheckedIn" />
+                            <button type="submit" class="btn btn-success w-100 mb-2">Đăng Ký Nhận Phòng</button>
+                        </form>
+
+                        <form asp-action="UpdateStatus" method="post" onsubmit="return confirm('Hủy đặt phòng này?');">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <input type="hidden" name="newStatus" value="@BookingStatus.Cancelled" />
+                            <button type="submit" class="btn btn-outline-danger w-100">Hủy Đặt Phòng</button>
+                        </form>
+                    }
+                    else if (Model.Status == BookingStatus.CheckedIn)
+                    {
+                        <form asp-action="UpdateStatus" method="post">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <input type="hidden" name="newStatus" value="@BookingStatus.Completed" />
+                            <button type="submit" class="btn btn-success w-100 mb-2">Trả Phòng (Hoàn Thành)</button>
+                        </form>
+                    }
+                    else if (Model.Status == BookingStatus.Completed)
+                    {
+                        <div class="alert alert-success text-center">
+                            Đặt Phòng Hoàn Thành
+                        </div>
+                    }
+                    else if (Model.Status == BookingStatus.Cancelled)
+                    {
+                        <div class="alert alert-danger text-center">
+                            Đặt Phòng Đã Bị Hủy
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetStatusColor(BookingStatus status)
+    {
+        return status switch
+        {
+            BookingStatus.Pending => "warning text-dark",
+            BookingStatus.Confirmed => "primary",
+            BookingStatus.CheckedIn => "info text-dark",
+            BookingStatus.Completed => "success",
+            BookingStatus.Cancelled => "danger",
+            _ => "secondary"
+        };
+    }
+}

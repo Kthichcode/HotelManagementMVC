@@ -1,0 +1,531 @@
+﻿@model List<BusinessObjects.Entities.Booking>
+
+@{
+    ViewData["Title"] = "Các Đặt Phòng Của Tôi";
+}
+
+<style>
+    body {
+        background: #f5f5f5;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .bookings-wrapper {
+        max-width: 1400px;
+        margin: 30px auto;
+        padding: 0 20px;
+    }
+
+    .bookings-header {
+        background: linear-gradient(135deg, #0066cc 0%, #3385d6 100%);
+        color: white;
+        padding: 40px;
+        border-radius: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .bookings-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0 0 10px 0;
+    }
+
+    .bookings-header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin: 0;
+    }
+
+    .alert-custom {
+        padding: 20px 25px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        font-size: 1rem;
+        font-weight: 500;
+        border: 2px solid;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .alert-custom i {
+        font-size: 1.5rem;
+    }
+
+    .alert-success-custom {
+        background: #d4edda;
+        border-color: #28a745;
+        color: #155724;
+    }
+
+    .alert-danger-custom {
+        background: #f8d7da;
+        border-color: #dc3545;
+        color: #721c24;
+    }
+
+    .bookings-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+
+    .booking-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        border: 2px solid #e0e0e0;
+    }
+
+    .booking-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        border-color: #0066cc;
+    }
+
+    .booking-card-header {
+        background: #0066cc;
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .booking-id {
+        font-size: 1.2rem;
+        font-weight: 700;
+    }
+
+    .booking-card-body {
+        padding: 25px;
+    }
+
+    .booking-info-row {
+        display: flex;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .booking-info-row:last-child {
+        border-bottom: none;
+    }
+
+    .booking-info-icon {
+        width: 40px;
+        height: 40px;
+        background: #fafafa;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #0066cc;
+        font-size: 1.2rem;
+        margin-right: 15px;
+    }
+
+    .booking-info-content {
+        flex: 1;
+    }
+
+    .booking-info-label {
+        font-size: 0.85rem;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+    }
+
+    .booking-info-value {
+        font-size: 1.05rem;
+        color: #0066cc;
+        font-weight: 600;
+        margin-top: 3px;
+    }
+
+    .room-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 5px;
+    }
+
+    .room-badge {
+        background: #0066cc;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 15px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .status-badge {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-pending {
+        background: #fff3cd;
+        color: #856404;
+        border: 2px solid #ffc107;
+    }
+
+    .status-confirmed {
+        background: #d1ecf1;
+        color: #0c5460;
+        border: 2px solid #17a2b8;
+    }
+
+    .status-checkedin {
+        background: #cce5ff;
+        color: #004085;
+        border: 2px solid #007bff;
+    }
+
+    .status-completed {
+        background: #d4edda;
+        color: #155724;
+        border: 2px solid #28a745;
+    }
+
+    .status-cancelled {
+        background: #f8d7da;
+        color: #721c24;
+        border: 2px solid #dc3545;
+    }
+
+    .booking-card-footer {
+        padding: 20px;
+        background: #fafafa;
+        border-top: 2px solid #e0e0e0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .total-amount {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #0066cc;
+    }
+
+    .total-amount small {
+        font-size: 0.8rem;
+        color: #666;
+        font-weight: 400;
+    }
+
+    .btn-cancel {
+        background: #dc3545;
+        color: white;
+        padding: 10px 25px;
+        border-radius: 25px;
+        border: none;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-cancel:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+    }
+
+    .btn-review {
+        background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+        color: white;
+        padding: 10px 25px;
+        border-radius: 25px;
+        border: none;
+        font-size: 0.95rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+    }
+
+    .btn-review:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(255, 193, 7, 0.4);
+        color: white;
+    }
+
+    .btn-details {
+        background: #0066cc;
+        color: white;
+        padding: 10px 25px;
+        border-radius: 25px;
+        border: none;
+        font-size: 0.95rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-details:hover {
+        background: #0052a3;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .no-bookings {
+        text-align: center;
+        padding: 80px 20px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .no-bookings i {
+        font-size: 5rem;
+        color: #ddd;
+        margin-bottom: 25px;
+    }
+
+    .no-bookings h3 {
+        color: #0066cc;
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+    }
+
+    .no-bookings p {
+        color: #666;
+        font-size: 1.1rem;
+        margin-bottom: 25px;
+    }
+
+    .btn-book-now {
+        background: #0066cc;
+        color: white;
+        padding: 15px 40px;
+        border-radius: 50px;
+        border: none;
+        font-size: 1.1rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-book-now:hover {
+        background: #0052a3;
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    @@media (max-width: 768px) {
+        .bookings-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .bookings-header h1 {
+            font-size: 2rem;
+        }
+
+        .booking-card-footer {
+            flex-direction: column;
+            gap: 15px;
+            align-items: stretch;
+        }
+
+        .btn-cancel,
+        .btn-details {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="bookings-wrapper">
+    <!-- Header -->
+    <div class="bookings-header">
+        <h1><i class="fas fa-calendar-check"></i> Các Đặt Phòng Của Tôi</h1>
+        <p>Quản lý và theo dõi tất cả các đặt phòng của bạn</p>
+    </div>
+
+    <!-- Alerts -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert-custom alert-success-custom">
+            <i class="fas fa-check-circle"></i>
+            <span>@TempData["SuccessMessage"]</span>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert-custom alert-danger-custom">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>@TempData["Error"]</span>
+        </div>
+    }
+
+    <!-- Bookings Grid -->
+    @if (Model != null && Model.Any())
+    {
+        <div class="bookings-grid">
+            @foreach (var item in Model)
+            {
+                <div class="booking-card">
+                    <!-- Card Header -->
+                    <div class="booking-card-header">
+                        <div class="booking-id">
+                            <i class="fas fa-receipt"></i> Booking #@item.Id
+                        </div>
+                        @switch (item.Status)
+                        {
+                            case BusinessObjects.Enums.BookingStatus.Pending:
+                                <span class="status-badge status-pending">
+                                    <i class="fas fa-clock"></i> Đang Chờ
+                                </span>
+                                break;
+                            case BusinessObjects.Enums.BookingStatus.Confirmed:
+                                <span class="status-badge status-confirmed">
+                                    <i class="fas fa-check"></i> Đã Xác Nhận
+                                </span>
+                                break;
+                            case BusinessObjects.Enums.BookingStatus.CheckedIn:
+                                <span class="status-badge status-checkedin">
+                                    <i class="fas fa-door-open"></i> Đã Nhận Phòng
+                                </span>
+                                break;
+                            case BusinessObjects.Enums.BookingStatus.Completed:
+                                <span class="status-badge status-completed">
+                                    <i class="fas fa-check-double"></i> Hoàn Thành
+                                </span>
+                                break;
+                            case BusinessObjects.Enums.BookingStatus.Cancelled:
+                                <span class="status-badge status-cancelled">
+                                    <i class="fas fa-times"></i> Đã Hủy
+                                </span>
+                                break;
+                            default:
+                                <span class="status-badge" style="background: #6c757d; color: white;">
+                                    Không Xác Định
+                                </span>
+                                break;
+                        }
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="booking-card-body">
+                        <div class="booking-info-row">
+                            <div class="booking-info-icon">
+                                <i class="fas fa-door-closed"></i>
+                            </div>
+                            <div class="booking-info-content">
+                                <div class="booking-info-label">Phòng</div>
+                                <div class="room-badges">
+                                    @foreach (var br in item.BookingRooms)
+                                    {
+                                        <span class="room-badge">@br.Room?.RoomNumber</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="booking-info-row">
+                            <div class="booking-info-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="booking-info-content">
+                                <div class="booking-info-label">Thời Gian Lưu Trú</div>
+                                <div class="booking-info-value">
+                                    @item.CheckInDate.ToString("dd/MM/yyyy") - @item.CheckOutDate.ToString("dd/MM/yyyy")
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="booking-info-row">
+                            <div class="booking-info-icon">
+                                <i class="fas fa-moon"></i>
+                            </div>
+                            <div class="booking-info-content">
+                                <div class="booking-info-label">Số Đêm</div>
+                                <div class="booking-info-value">
+                                    @((item.CheckOutDate - item.CheckInDate).Days) đêm
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Footer -->
+                    <div class="booking-card-footer">
+                        <div class="total-amount">
+                            @item.TotalAmount.ToString("N0") <small>VND</small>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            @if (item.Status == BusinessObjects.Enums.BookingStatus.Pending
+                                || item.Status == BusinessObjects.Enums.BookingStatus.Confirmed)
+                            {
+                                <form asp-action="Cancel"
+                                      method="post"
+                                      style="display:inline"
+                                      onsubmit="return confirm('Bạn có chắc chắn muốn hủy đặt phòng này?');">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <button type="submit" class="btn-cancel">
+                                        <i class="fas fa-times-circle"></i> Hủy Đặt Phòng
+                                    </button>
+                                </form>
+                            }
+                            else if (item.Status == BusinessObjects.Enums.BookingStatus.Completed)
+                            {
+                                @if (item.Review == null)
+                                {
+                                    <a asp-controller="Reviews" asp-action="Create" asp-route-bookingId="@item.Id" class="btn-review">
+                                        <i class="fas fa-star"></i> Đánh Giá
+                                    </a>
+                                }
+                                else
+                                {
+                                    <div style="color: #28a745; font-size: 0.9rem; font-weight: 600;">
+                                        <i class="fas fa-check-circle"></i> Đã Đánh Giá
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div style="color: #999; font-size: 0.9rem; font-style: italic;">
+                                    <i class="fas fa-info-circle"></i> Không thể hủy
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="no-bookings">
+            <i class="fas fa-calendar-times"></i>
+            <h3>Chưa Có Đặt Phòng Nào</h3>
+            <p>Bạn chưa có bất kỳ đặt phòng nào. Hãy bắt đầu đặt phòng ngay hôm nay!</p>
+            <a asp-controller="Rooms" asp-action="Search" class="btn-book-now">
+                <i class="fas fa-search"></i> Tìm Phòng Ngay
+            </a>
+        </div>
+    }
+</div>

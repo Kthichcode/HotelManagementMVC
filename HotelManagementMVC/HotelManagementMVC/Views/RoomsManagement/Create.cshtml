@@ -1,0 +1,358 @@
+﻿@model HotelManagementMVC.Models.RoomFormViewModel
+
+@{
+    ViewData["Title"] = Model.Id == 0 ? "Tạo Phòng" : "Chỉnh Sửa Phòng";
+}
+
+<style>
+    body {
+        background: #f5f5f5;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .form-wrapper {
+        max-width: 1000px;
+        margin: 30px auto;
+        padding: 0 20px;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-header {
+        background: linear-gradient(135deg, #0066cc 0%, #3385d6 100%);
+        color: white;
+        padding: 30px 40px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .form-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    }
+
+    .form-header h4 {
+        margin: 0;
+        font-size: 1.8rem;
+        font-weight: 700;
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .form-header h4 i {
+        font-size: 2rem;
+    }
+
+    .form-body {
+        padding: 40px;
+    }
+
+    .form-label-custom {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-label-custom .text-danger {
+        color: #dc3545;
+        margin-left: 3px;
+    }
+
+    .form-control-custom,
+    .form-select-custom {
+        width: 100%;
+        padding: 12px 18px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    .form-control-custom:focus,
+    .form-select-custom:focus {
+        outline: none;
+        border-color: #0066cc;
+        box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.15);
+        background: white;
+    }
+
+    .form-control-custom::placeholder {
+        color: #999;
+    }
+
+    .alert-danger-custom {
+        background: #fff5f5;
+        border: 2px solid #dc3545;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 25px;
+        color: #721c24;
+    }
+
+    .alert-danger-custom strong {
+        color: #dc3545;
+    }
+
+    .alert-danger-custom ul {
+        margin: 10px 0 0 0;
+        padding-left: 25px;
+    }
+
+    .image-preview-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+    }
+
+    .image-preview-item {
+        position: relative;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .image-preview-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 102, 204, 0.2);
+    }
+
+    .image-preview-item img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .image-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: linear-gradient(135deg, #0066cc 0%, #3385d6 100%);
+        color: white;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .alert-warning-custom {
+        background: #fffbf0;
+        border: 2px solid #ffc107;
+        border-radius: 10px;
+        padding: 15px;
+        margin-top: 15px;
+        color: #856404;
+    }
+
+    .alert-warning-custom i {
+        color: #ffc107;
+        margin-right: 8px;
+    }
+
+    .form-footer {
+        background: #f8f9fa;
+        padding: 25px 40px;
+        border-top: 1px solid #e0e0e0;
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+    }
+
+    .btn-cancel {
+        background: white;
+        color: #666;
+        border: 2px solid #e0e0e0;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-cancel:hover {
+        background: #f0f0f0;
+        border-color: #ccc;
+        color: #333;
+        transform: translateY(-2px);
+    }
+
+    .btn-save {
+        background: linear-gradient(135deg, #0066cc 0%, #3385d6 100%);
+        color: white;
+        border: none;
+        padding: 12px 35px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+    }
+
+    .btn-save:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
+        color: white;
+    }
+
+    .text-muted-custom {
+        color: #666;
+        font-size: 0.9rem;
+        margin-top: 5px;
+    }
+</style>
+
+<div class="form-wrapper">
+    <div class="form-card">
+        <div class="form-header">
+            <h4>
+                <i class="fas fa-door-open"></i>
+                @(Model.Id == 0 ? "Tạo Phòng Mới" : "Chỉnh Sửa Phòng")
+            </h4>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+            <div class="form-body">
+                @if (ViewData.ModelState.ErrorCount > 0)
+                {
+                    <div class="alert-danger-custom">
+                        <strong>Vui lòng sửa các lỗi sau:</strong>
+                        <ul>
+                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <li>@error.ErrorMessage</li>
+                            }
+                        </ul>
+                    </div>
+                }
+
+                @if (Model.Id != 0)
+                {
+                    <input type="hidden" asp-for="Id" />
+                }
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label asp-for="RoomNumber" class="form-label-custom">
+                            <i class="fas fa-hashtag"></i> Số Phòng <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="RoomNumber" class="form-control-custom" placeholder="Nhập số phòng (ví dụ: 101)" required />
+                        <span asp-validation-for="RoomNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-4">
+                        <label asp-for="RoomTypeId" class="form-label-custom">
+                            <i class="fas fa-th-large"></i> Loại Phòng <span class="text-danger">*</span>
+                        </label>
+                        <select asp-for="RoomTypeId" asp-items="Model.RoomTypes" class="form-select-custom" required>
+                            <option value="">-- Chọn Loại Phòng --</option>
+                        </select>
+                        <span asp-validation-for="RoomTypeId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label asp-for="Status" class="form-label-custom">
+                            <i class="fas fa-info-circle"></i> Trạng Thái <span class="text-danger">*</span>
+                        </label>
+                        <select asp-for="Status" asp-items="Model.StatusOptions" class="form-select-custom" required></select>
+                    </div>
+
+                    <div class="col-md-6 mb-4">
+                        <label asp-for="MaxOccupancy" class="form-label-custom">
+                            <i class="fas fa-users"></i> Sức Chứa Tối Đa <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="MaxOccupancy" type="number" min="1" max="50" class="form-control-custom" placeholder="Nhập sức chứa tối đa" required />
+                        <span asp-validation-for="MaxOccupancy" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Description" class="form-label-custom">
+                        <i class="fas fa-align-left"></i> Mô Tả
+                    </label>
+                    <textarea asp-for="Description" rows="4" class="form-control-custom" placeholder="Nhập mô tả phòng (tuỳ chọn)"></textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Images" class="form-label-custom">
+                        <i class="fas fa-images"></i> Hình Ảnh Phòng (nhiều ảnh)
+                    </label>
+                    <input asp-for="Images" type="file" multiple class="form-control-custom" accept="image/*" />
+                    <small class="text-muted-custom">Bạn có thể chọn nhiều hình ảnh cùng lúc</small>
+                </div>
+
+                @* Hiển thị hình ảnh hiện có khi chỉnh sửa *@
+                @if (Model.Id != 0 && Model.ExistingImageUrls != null && Model.ExistingImageUrls.Count > 0)
+                {
+                    <div class="mb-4">
+                        <label class="form-label-custom">
+                            <i class="fas fa-image"></i> Hình Ảnh Hiện Có
+                        </label>
+                        <div class="image-preview-grid">
+                            @for (int i = 0; i < Model.ExistingImageUrls.Count; i++)
+                            {
+                                <div class="image-preview-item">
+                                    <img src="@Model.ExistingImageUrls[i]"
+                                         alt="Hình Ảnh Phòng @(i + 1)" />
+                                    <span class="image-badge">Hình @(i + 1)</span>
+                                </div>
+                            }
+                        </div>
+                        <div class="alert-warning-custom">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Lưu ý:</strong> Tải lên hình ảnh mới sẽ thay thế các hình ảnh cũ.
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="form-footer">
+                <a asp-action="Index" class="btn-cancel">
+                    <i class="fas fa-times"></i> Hủy
+                </a>
+                <button type="submit" class="btn-save">
+                    <i class="fas fa-save"></i> Lưu Phòng
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // Xem trước hình ảnh trước khi tải lên
+        document.querySelector('input[type="file"]').addEventListener('change', function(e) {
+            const files = e.target.files;
+            if (files.length > 0) {
+                console.log(`${files.length} file(s) selected`);
+            }
+        });
+    </script>
+}

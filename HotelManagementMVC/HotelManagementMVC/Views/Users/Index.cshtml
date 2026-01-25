@@ -1,0 +1,151 @@
+﻿@model List<HotelManagementMVC.Models.UserViewModel>
+
+@{
+    ViewData["Title"] = "Quản Lý Người Dùng";
+}
+
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-users"></i> Quản Lý Người Dùng</h2>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-user-plus"></i> Tạo Người Dùng Mới
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="fas fa-check-circle"></i>
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            <i class="fas fa-exclamation-circle"></i>
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm mb-3">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-10">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" name="searchString" class="form-control"
+                               placeholder="Tìm kiếm theo tên đăng nhập, email hoặc họ tên..."
+                               value="@ViewBag.SearchString">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-primary w-100" type="submit">
+                        <i class="fas fa-search"></i> Tìm Kiếm
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4" width="20%">Tên Đăng Nhập</th>
+                            <th width="25%">Email</th>
+                            <th width="20%">Họ Tên</th>
+                            <th width="15%">Vai Trò</th>
+                            <th width="10%">Trạng Thái</th>
+                            <th class="text-end pe-4" width="10%">Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+                                <td class="ps-4 fw-bold text-primary">@user.Username</td>
+                                <td>
+                                    <i class="fas fa-envelope text-muted"></i> @user.Email
+                                </td>
+                                <td>@user.FullName</td>
+                                <td>
+                                    @if (user.Role == "Admin")
+                                    {
+                                        <span class="badge bg-danger fs-6">
+                                            <i class="fas fa-crown"></i> Quản Trị Viên
+                                        </span>
+                                    }
+                                    else if (user.Role == "Manager")
+                                    {
+                                        <span class="badge bg-warning text-dark fs-6">
+                                            <i class="fas fa-user-tie"></i> Quản Lý
+                                        </span>
+                                    }
+                                    else if (user.Role == "Staff")
+                                    {
+                                        <span class="badge bg-info fs-6">
+                                            <i class="fas fa-user-cog"></i> Nhân Viên
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary fs-6">
+                                            <i class="fas fa-user"></i> Khách Hàng
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (user.IsLocked)
+                                    {
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-lock"></i> Đã Khóa
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check-circle"></i> Đang Hoạt Động
+                                        </span>
+                                    }
+                                </td>
+                                <td class="text-end pe-4">
+                                    <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form asp-action="ToggleLock" method="post" style="display:inline;"
+                                          onsubmit="return confirm('Bạn có chắc chắn không?');">
+                                        <input type="hidden" name="id" value="@user.Id" />
+                                        @if (user.IsLocked)
+                                        {
+                                            <button type="submit" class="btn btn-sm btn-outline-success">
+                                                <i class="fas fa-unlock"></i>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="submit" class="btn btn-sm btn-outline-warning">
+                                                <i class="fas fa-lock"></i>
+                                            </button>
+                                        }
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center mt-4">
+            <i class="fas fa-info-circle fa-2x mb-2"></i>
+            <p class="mb-0">Không tìm thấy người dùng. Hãy thử điều chỉnh lại tiêu chí tìm kiếm.</p>
+        </div>
+    }
+</div>

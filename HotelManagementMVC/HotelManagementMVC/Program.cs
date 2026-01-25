@@ -1,13 +1,17 @@
 ﻿using BusinessObjects;
-using DataAccessObjects;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Repositories;
+using Repositories.Interfaces;
+using Services;
+using Services.Interfaces;
+using HotelManagementMVC.Data;
 
 namespace HotelManagementMVC
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -30,8 +34,37 @@ namespace HotelManagementMVC
             .AddDefaultTokenProviders();
 
             builder.Services.AddControllersWithViews();
+            builder.Services.AddScoped<IAccountService, AccountService>();
+
+            builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+            builder.Services.AddScoped<IRoomService, RoomService>();
+            builder.Services.AddScoped<IRoomTypeRepository, RoomTypeRepository>();
+            builder.Services.AddScoped<IRoomTypeService, RoomTypeService>();
+            
+            builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+            builder.Services.AddScoped<IBookingService, BookingService>();
+            builder.Services.AddScoped<IVnPayService, VnPayService>();
+            
+            builder.Services.AddScoped<IWalletRepository, WalletRepository>();
+            builder.Services.AddScoped<IWalletService, WalletService>();
+            builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+            builder.Services.AddScoped<IDashboardService, DashboardService>();
+
+            builder.Services.AddScoped<IRoomImageRepository, RoomImageRepository>();
+            
+            builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+            builder.Services.AddScoped<IReviewService, ReviewService>();
+
+
+
 
             var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                await DbSeeder.SeedAsync(scope.ServiceProvider);
+            }
+
 
             if (!app.Environment.IsDevelopment())
             {
@@ -50,6 +83,8 @@ namespace HotelManagementMVC
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+
 
             app.Run();
         }

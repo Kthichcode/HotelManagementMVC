@@ -1,0 +1,345 @@
+﻿@model HotelManagementMVC.Models.RoomTypeFormViewModel
+
+@{
+    ViewData["Title"] = "Tạo Loại Phòng";
+}
+
+<style>
+    body {
+        background: #f5f5f5;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .form-wrapper {
+        max-width: 1000px;
+        margin: 30px auto;
+        padding: 0 20px;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-header {
+        background: linear-gradient(135deg, #0066cc 0%, #3385d6 100%);
+        color: white;
+        padding: 30px 40px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .form-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    }
+
+    .form-header h4 {
+        margin: 0;
+        font-size: 1.8rem;
+        font-weight: 700;
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .form-header h4 i {
+        font-size: 2rem;
+    }
+
+    .form-body {
+        padding: 40px;
+    }
+
+    .alert-info-custom {
+        background: #e7f3ff;
+        border: 2px solid #0066cc;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 30px;
+        color: #004085;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .alert-info-custom i {
+        color: #0066cc;
+        font-size: 1.3rem;
+        margin-top: 2px;
+    }
+
+    .alert-warning-custom {
+        background: #fffbf0;
+        border: 2px solid #ffc107;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 20px;
+        color: #856404;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .alert-warning-custom i {
+        color: #ffc107;
+        font-size: 1.3rem;
+        margin-top: 2px;
+    }
+
+    .form-label-custom {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1rem;
+    }
+
+    .form-label-custom .text-danger {
+        color: #dc3545;
+        margin-left: 3px;
+    }
+
+    .form-control-custom {
+        width: 100%;
+        padding: 14px 18px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    .form-control-custom:focus {
+        outline: none;
+        border-color: #0066cc;
+        box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.15);
+        background: white;
+    }
+
+    .form-control-custom::placeholder {
+        color: #999;
+    }
+
+    .input-group-custom {
+        display: flex;
+        align-items: stretch;
+    }
+
+    .input-group-text-custom {
+        background: linear-gradient(135deg, #0066cc 0%, #3385d6 100%);
+        color: white;
+        padding: 14px 18px;
+        border: 2px solid #0066cc;
+        border-radius: 10px 0 0 10px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+    }
+
+    .input-group-custom .form-control-custom {
+        border-radius: 0 10px 10px 0;
+        border-left: none;
+    }
+
+    .input-group-custom .form-control-custom:focus {
+        border-left: 2px solid #0066cc;
+    }
+
+    .text-muted-custom {
+        color: #666;
+        font-size: 0.9rem;
+        margin-top: 8px;
+        display: block;
+    }
+
+    .form-footer {
+        background: #f8f9fa;
+        padding: 25px 40px;
+        border-top: 1px solid #e0e0e0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .btn-back {
+        background: white;
+        color: #666;
+        border: 2px solid #e0e0e0;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-back:hover {
+        background: #f0f0f0;
+        border-color: #ccc;
+        color: #333;
+        transform: translateY(-2px);
+    }
+
+    .btn-actions {
+        display: flex;
+        gap: 15px;
+    }
+
+    .btn-reset {
+        background: white;
+        color: #666;
+        border: 2px solid #e0e0e0;
+        padding: 12px 25px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-reset:hover {
+        background: #f0f0f0;
+        border-color: #ccc;
+        color: #333;
+        transform: translateY(-2px);
+    }
+
+    .btn-save {
+        background: linear-gradient(135deg, #0066cc 0%, #3385d6 100%);
+        color: white;
+        border: none;
+        padding: 12px 35px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.05rem;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+    }
+
+    .btn-save:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
+        color: white;
+    }
+</style>
+
+<div class="form-wrapper">
+    <div class="form-card">
+        <div class="form-header">
+            <h4>
+                <i class="fas fa-plus-circle"></i> Tạo Loại Phòng Mới
+            </h4>
+        </div>
+
+        <form method="post" class="needs-validation" novalidate>
+            <div class="form-body">
+                <div class="alert-info-custom">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>Thông Tin:</strong> Điền thông tin dưới đây để tạo một loại phòng mới cho khách sạn của bạn.
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Name" class="form-label-custom">
+                        <i class="fas fa-tag"></i> Tên Loại Phòng <span class="text-danger">*</span>
+                    </label>
+                    <input asp-for="Name" class="form-control-custom" placeholder="Ví dụ: Phòng Suite, Phòng Standard, Phòng VIP" required />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                    <small class="text-muted-custom">Nhập tên mô tả cho loại phòng này</small>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="PricePerNight" class="form-label-custom">
+                        <i class="fas fa-dollar-sign"></i> Giá Mỗi Đêm (VND) <span class="text-danger">*</span>
+                    </label>
+                    <div class="input-group-custom">
+                        <span class="input-group-text-custom">đ</span>
+                        <input asp-for="PricePerNight" class="form-control-custom" type="number" step="1000" min="0" placeholder="0" required />
+                        <span class="input-group-text-custom">/đêm</span>
+                    </div>
+                    <span asp-validation-for="PricePerNight" class="text-danger d-block"></span>
+                    <small class="text-muted-custom">Đặt giá cơ bản cho một đêm lưu trú</small>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Description" class="form-label-custom">
+                        <i class="fas fa-align-left"></i> Mô Tả
+                    </label>
+                    <textarea asp-for="Description" class="form-control-custom" rows="5" placeholder="Nhập mô tả chi tiết cho loại phòng này bao gồm tiện nghi, đặc điểm và điểm nổi bật..."></textarea>
+                    <small class="text-muted-custom">Cung cấp chi tiết về tiện nghi, đặc điểm và lý do loại phòng này đặc biệt</small>
+                </div>
+
+                <div class="alert-warning-custom">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <strong>Lưu ý:</strong> Sau khi tạo, bạn có thể chỉnh sửa thông tin này bất cứ lúc nào từ trang quản lý loại phòng.
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-footer">
+                <a asp-action="Index" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Quay Lại Danh Sách
+                </a>
+                <div class="btn-actions">
+                    <button type="reset" class="btn-reset">
+                        <i class="fas fa-redo"></i> Đặt Lại
+                    </button>
+                    <button type="submit" class="btn-save">
+                        <i class="fas fa-save"></i> Tạo Loại Phòng
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // Định dạng lại nhập liệu giá trị tiền
+        const priceInput = document.querySelector('input[name="PricePerNight"]');
+
+        priceInput.addEventListener('blur', function() {
+            if (this.value) {
+                this.value = Math.round(parseFloat(this.value) / 1000) * 1000;
+            }
+        });
+
+        // Phản hồi khi form được xác thực
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            if (!form.checkValidity()) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        });
+
+        // Chức năng nút reset form
+        const resetBtn = document.querySelector('button[type="reset"]');
+        resetBtn.addEventListener('click', function() {
+            form.classList.remove('was-validated');
+        });
+    </script>
+}
