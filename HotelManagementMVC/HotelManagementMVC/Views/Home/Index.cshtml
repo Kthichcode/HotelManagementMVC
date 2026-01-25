@@ -66,7 +66,7 @@
     .section-title h2 {
         font-size: 2.5rem;
         font-weight: 700;
-        color: #1a1a1a;
+        color: #0066cc;
         margin-bottom: 15px;
     }
 
@@ -91,13 +91,13 @@
     .feature-icon-box:hover {
         transform: translateY(-10px);
         box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-        border-color: #1a1a1a;
+        border-color: #0066cc;
     }
 
     .icon-circle {
         width: 80px;
         height: 80px;
-        background: #1a1a1a;
+        background: #0066cc;
         color: white;
         border-radius: 50%;
         display: flex;
@@ -109,14 +109,14 @@
     }
 
     .feature-icon-box:hover .icon-circle {
-        background: #000;
+        background: #0052a3;
         transform: rotate(360deg);
     }
 
     .feature-icon-box h4 {
         font-size: 1.3rem;
         font-weight: 700;
-        color: #1a1a1a;
+        color: #0066cc;
         margin-bottom: 15px;
     }
 
@@ -140,7 +140,7 @@
     .room-card:hover {
         transform: translateY(-10px);
         box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-        border-color: #1a1a1a;
+        border-color: #0066cc;
     }
 
     .room-card-img {
@@ -164,7 +164,7 @@
         position: absolute;
         top: 15px;
         right: 15px;
-        background: #1a1a1a;
+        background: #0066cc;
         color: white;
         padding: 8px 15px;
         border-radius: 20px;
@@ -180,7 +180,7 @@
     .room-card-title {
         font-size: 1.3rem;
         font-weight: 700;
-        color: #1a1a1a;
+        color: #0066cc;
         margin-bottom: 12px;
     }
 
@@ -207,7 +207,7 @@
     }
 
     .room-feature-item i {
-        color: #1a1a1a;
+        color: #0066cc;
     }
 
     .room-price {
@@ -221,7 +221,7 @@
     .price-tag {
         font-size: 1.8rem;
         font-weight: 700;
-        color: #1a1a1a;
+        color: #0066cc;
     }
 
     .price-tag small {
@@ -230,23 +230,60 @@
         font-weight: 400;
     }
 
+    .room-card-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 2px solid #f0f0f0;
+    }
+
     .btn-book-now {
-        background: #1a1a1a;
+        flex: 1;
+        background: #0066cc;
         color: white;
-        padding: 12px 30px;
+        padding: 12px 20px;
         border-radius: 25px;
         border: none;
         font-weight: 600;
         text-decoration: none;
         transition: all 0.3s ease;
-        display: inline-block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 0.95rem;
     }
 
     .btn-book-now:hover {
-        background: #000;
+        background: #0052a3;
         color: white;
         transform: translateY(-2px);
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-details-home {
+        flex: 1;
+        background: white;
+        color: #0066cc;
+        padding: 12px 20px;
+        border-radius: 25px;
+        border: 2px solid #0066cc;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 0.95rem;
+    }
+
+    .btn-details-home:hover {
+        background: #0066cc;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
 
     /* Stats Cards */
@@ -262,14 +299,14 @@
     .stats-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        border-color: #1a1a1a;
+        border-color: #0066cc;
     }
 
     .stats-number {
         display: block;
         font-size: 3rem;
         font-weight: 800;
-        color: #1a1a1a;
+        color: #0066cc;
         margin-bottom: 10px;
     }
 
@@ -282,7 +319,7 @@
 
     /* CTA Section */
     .cta-section {
-        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        background: linear-gradient(135deg, #0066cc 0%, #3385d6 100%);
         color: white;
         padding: 80px 0;
         text-align: center;
@@ -303,7 +340,7 @@
 
     .btn-light-cta {
         background: white;
-        color: #1a1a1a;
+        color: #0066cc;
         padding: 15px 40px;
         border-radius: 50px;
         border: none;
@@ -314,7 +351,7 @@
 
     .btn-light-cta:hover {
         background: #f0f0f0;
-        color: #000;
+        color: #0052a3;
         transform: translateY(-3px);
         box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3);
     }
@@ -331,7 +368,7 @@
 
     .btn-outline-light:hover {
         background: white;
-        color: #1a1a1a;
+        color: #0066cc;
         transform: translateY(-3px);
     }
 
@@ -449,8 +486,23 @@
                                 @(room.RoomType?.PricePerNight.ToString("N0") ?? "N/A")đ
                                 <small>/đêm</small>
                             </div>
-                            <a asp-controller="Rooms" asp-action="Search" class="btn btn-book-now">
-                                Đặt Ngay
+                        </div>
+                        <div class="room-card-actions">
+                            <a asp-controller="Rooms"
+                               asp-action="Details"
+                               asp-route-id="@room.Id"
+                               asp-route-checkIn="@DateTime.Today.ToString("yyyy-MM-dd")"
+                               asp-route-checkOut="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")"
+                               class="btn-details-home">
+                                <i class="fas fa-eye"></i> Chi Tiết
+                            </a>
+                            <a asp-controller="Bookings"
+                               asp-action="Confirm"
+                               asp-route-roomId="@room.Id"
+                               asp-route-checkIn="@DateTime.Today.ToString("yyyy-MM-dd")"
+                               asp-route-checkOut="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")"
+                               class="btn-book-now">
+                                <i class="fas fa-check-circle"></i> Đặt Ngay
                             </a>
                         </div>
                     </div>
@@ -504,7 +556,7 @@
 </section>
 
 <!-- PHẦN CTA -->
-@if (!User.Identity.IsAuthenticated)
+@if (User.Identity == null || !User.Identity.IsAuthenticated)
 {
     <section class="cta-section">
         <div class="container">

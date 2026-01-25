@@ -17,7 +17,7 @@
     }
 
     .bookings-header {
-        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        background: linear-gradient(135deg, #0066cc 0%, #3385d6 100%);
         color: white;
         padding: 40px;
         border-radius: 20px;
@@ -84,11 +84,11 @@
     .booking-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        border-color: #1a1a1a;
+        border-color: #0066cc;
     }
 
     .booking-card-header {
-        background: #1a1a1a;
+        background: #0066cc;
         color: white;
         padding: 20px;
         display: flex;
@@ -124,7 +124,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #1a1a1a;
+        color: #0066cc;
         font-size: 1.2rem;
         margin-right: 15px;
     }
@@ -143,7 +143,7 @@
 
     .booking-info-value {
         font-size: 1.05rem;
-        color: #1a1a1a;
+        color: #0066cc;
         font-weight: 600;
         margin-top: 3px;
     }
@@ -156,7 +156,7 @@
     }
 
     .room-badge {
-        background: #1a1a1a;
+        background: #0066cc;
         color: white;
         padding: 5px 12px;
         border-radius: 15px;
@@ -215,7 +215,7 @@
     .total-amount {
         font-size: 1.5rem;
         font-weight: 700;
-        color: #1a1a1a;
+        color: #0066cc;
     }
 
     .total-amount small {
@@ -245,8 +245,30 @@
         box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
     }
 
+    .btn-review {
+        background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+        color: white;
+        padding: 10px 25px;
+        border-radius: 25px;
+        border: none;
+        font-size: 0.95rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+    }
+
+    .btn-review:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(255, 193, 7, 0.4);
+        color: white;
+    }
+
     .btn-details {
-        background: #1a1a1a;
+        background: #0066cc;
         color: white;
         padding: 10px 25px;
         border-radius: 25px;
@@ -261,7 +283,7 @@
     }
 
     .btn-details:hover {
-        background: #000;
+        background: #0052a3;
         color: white;
         transform: translateY(-2px);
     }
@@ -281,7 +303,7 @@
     }
 
     .no-bookings h3 {
-        color: #1a1a1a;
+        color: #0066cc;
         font-size: 1.8rem;
         margin-bottom: 15px;
     }
@@ -293,7 +315,7 @@
     }
 
     .btn-book-now {
-        background: #1a1a1a;
+        background: #0066cc;
         color: white;
         padding: 15px 40px;
         border-radius: 50px;
@@ -308,7 +330,7 @@
     }
 
     .btn-book-now:hover {
-        background: #000;
+        background: #0052a3;
         color: white;
         transform: translateY(-3px);
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
@@ -454,25 +476,42 @@
                         <div class="total-amount">
                             @item.TotalAmount.ToString("N0") <small>VND</small>
                         </div>
-                        @if (item.Status == BusinessObjects.Enums.BookingStatus.Pending
-                            || item.Status == BusinessObjects.Enums.BookingStatus.Confirmed)
-                        {
-                            <form asp-action="Cancel"
-                                  method="post"
-                                  style="display:inline"
-                                  onsubmit="return confirm('Bạn có chắc chắn muốn hủy đặt phòng này?');">
-                                <input type="hidden" name="id" value="@item.Id" />
-                                <button type="submit" class="btn-cancel">
-                                    <i class="fas fa-times-circle"></i> Hủy Đặt Phòng
-                                </button>
-                            </form>
-                        }
-                        else
-                        {
-                            <div style="color: #999; font-size: 0.9rem; font-style: italic;">
-                                <i class="fas fa-info-circle"></i> Không thể hủy
-                            </div>
-                        }
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            @if (item.Status == BusinessObjects.Enums.BookingStatus.Pending
+                                || item.Status == BusinessObjects.Enums.BookingStatus.Confirmed)
+                            {
+                                <form asp-action="Cancel"
+                                      method="post"
+                                      style="display:inline"
+                                      onsubmit="return confirm('Bạn có chắc chắn muốn hủy đặt phòng này?');">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <button type="submit" class="btn-cancel">
+                                        <i class="fas fa-times-circle"></i> Hủy Đặt Phòng
+                                    </button>
+                                </form>
+                            }
+                            else if (item.Status == BusinessObjects.Enums.BookingStatus.Completed)
+                            {
+                                @if (item.Review == null)
+                                {
+                                    <a asp-controller="Reviews" asp-action="Create" asp-route-bookingId="@item.Id" class="btn-review">
+                                        <i class="fas fa-star"></i> Đánh Giá
+                                    </a>
+                                }
+                                else
+                                {
+                                    <div style="color: #28a745; font-size: 0.9rem; font-weight: 600;">
+                                        <i class="fas fa-check-circle"></i> Đã Đánh Giá
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div style="color: #999; font-size: 0.9rem; font-style: italic;">
+                                    <i class="fas fa-info-circle"></i> Không thể hủy
+                                </div>
+                            }
+                        </div>
                     </div>
                 </div>
             }

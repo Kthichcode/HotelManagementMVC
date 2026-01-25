@@ -103,10 +103,20 @@ namespace HotelManagementMVC.Controllers
 
         // ✅ NEW: View Details (xem ảnh + mô tả + số người)
         [HttpGet]
-        public IActionResult Details(int id)
+        public IActionResult Details(int id, string checkIn = null, string checkOut = null)
         {
             var room = _roomService.GetByIdWithImages(id);
             if (room == null) return NotFound();
+
+            // Lưu checkIn và checkOut vào ViewBag để sử dụng trong view
+            if (!string.IsNullOrEmpty(checkIn))
+            {
+                ViewBag.SelectedCheckIn = checkIn;
+            }
+            if (!string.IsNullOrEmpty(checkOut))
+            {
+                ViewBag.SelectedCheckOut = checkOut;
+            }
 
             return View(room);
         }

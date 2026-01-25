@@ -25,7 +25,7 @@
     }
 
     .room-modal-header {
-        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        background: linear-gradient(135deg, #0066cc 0%, #3385d6 100%);
         color: white;
         padding: 50px 40px;
         position: relative;
@@ -61,7 +61,7 @@
     .room-badge {
         display: inline-block;
         background: white;
-        color: #1a1a1a;
+        color: #0066cc;
         padding: 8px 20px;
         border-radius: 20px;
         font-size: 0.9rem;
@@ -94,13 +94,13 @@
     .info-box:hover {
         transform: translateY(-5px);
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        border-color: #1a1a1a;
+        border-color: #0066cc;
     }
 
     .info-box-icon {
         width: 50px;
         height: 50px;
-        background: #1a1a1a;
+        background: #0066cc;
         color: white;
         border-radius: 10px;
         display: flex;
@@ -121,13 +121,13 @@
 
     .info-box-value {
         font-size: 1.3rem;
-        color: #1a1a1a;
+        color: #0066cc;
         font-weight: 700;
     }
 
     .info-box-value.price {
         font-size: 1.8rem;
-        color: #1a1a1a;
+        color: #0066cc;
     }
 
     .info-box-value small {
@@ -138,17 +138,17 @@
 
     .section-title {
         font-size: 1.5rem;
-        color: #1a1a1a;
+        color: #0066cc;
         font-weight: 700;
         margin-bottom: 25px;
         padding-bottom: 15px;
-        border-bottom: 3px solid #1a1a1a;
+        border-bottom: 3px solid #0066cc;
         display: inline-block;
     }
 
     .description-box {
         background: #fafafa;
-        border-left: 5px solid #1a1a1a;
+        border-left: 5px solid #0066cc;
         padding: 30px;
         border-radius: 10px;
         margin-bottom: 40px;
@@ -174,7 +174,7 @@
         overflow: hidden;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease;
-        background: #000;
+        background: #0052a3;
     }
 
     .gallery-card:hover {
@@ -226,7 +226,7 @@
     }
 
     .btn-primary-custom {
-        background: #1a1a1a;
+        background: #0066cc;
         color: white;
         padding: 18px 45px;
         border-radius: 50px;
@@ -242,18 +242,18 @@
     }
 
     .btn-primary-custom:hover {
-        background: #000;
+        background: #0052a3;
         transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 8px 25px rgba(0, 82, 163, 0.3);
         color: white;
     }
 
     .btn-secondary-custom {
         background: white;
-        color: #1a1a1a;
+        color: #0066cc;
         padding: 18px 35px;
         border-radius: 50px;
-        border: 2px solid #1a1a1a;
+        border: 2px solid #0066cc;
         font-size: 1rem;
         font-weight: 600;
         text-decoration: none;
@@ -264,7 +264,7 @@
     }
 
     .btn-secondary-custom:hover {
-        background: #1a1a1a;
+        background: #0066cc;
         color: white;
     }
 
@@ -382,6 +382,34 @@
                 <i class="fas fa-arrow-left"></i>
                 Quay Lại
             </a>
+
+            <a asp-controller="Reviews" 
+               asp-action="Index" 
+               asp-route-roomId="@Model.Id" 
+               class="btn-secondary-custom"
+               style="background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%); color: white; border: none;">
+                <i class="fas fa-star"></i> Xem Đánh Giá
+            </a>
+
+            @if (ViewBag.SelectedCheckIn != null && ViewBag.SelectedCheckOut != null)
+            {
+                <a asp-controller="Bookings"
+                   asp-action="Confirm"
+                   asp-route-roomId="@Model.Id"
+                   asp-route-checkIn="@ViewBag.SelectedCheckIn"
+                   asp-route-checkOut="@ViewBag.SelectedCheckOut"
+                   class="btn-primary-custom">
+                    <i class="fas fa-check-circle"></i> Đặt Phòng
+                </a>
+            }
+            else
+            {
+                <a asp-controller="Rooms"
+                   asp-action="Search"
+                   class="btn-primary-custom">
+                    <i class="fas fa-search"></i> Tìm Phòng Để Đặt
+                </a>
+            }
         </div>
     </div>
 </div>

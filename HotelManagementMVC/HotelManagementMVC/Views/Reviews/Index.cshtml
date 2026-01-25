@@ -1,0 +1,258 @@
+@model List<BusinessObjects.Entities.Review>
+
+@{
+    ViewData["Title"] = "Đánh Giá Phòng";
+    var roomId = ViewBag.RoomId as int?;
+}
+
+<style>
+    body {
+        background: #f5f5f5;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .reviews-wrapper {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 0 20px;
+    }
+
+    .reviews-header {
+        background: linear-gradient(135deg, #0066cc 0%, #3385d6 100%);
+        color: white;
+        padding: 40px;
+        border-radius: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 40px rgba(0, 102, 204, 0.2);
+    }
+
+    .reviews-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0 0 10px 0;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .reviews-header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin: 0;
+    }
+
+    .reviews-stats {
+        display: flex;
+        gap: 30px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+
+    .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .stat-item i {
+        font-size: 1.5rem;
+    }
+
+    .stat-item span {
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+    .reviews-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .review-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        border: 2px solid #e0e0e0;
+    }
+
+    .review-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 102, 204, 0.15);
+        border-color: #0066cc;
+    }
+
+    .review-header-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .reviewer-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .reviewer-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0066cc 0%, #3385d6 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+
+    .reviewer-details h4 {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .reviewer-details p {
+        margin: 5px 0 0 0;
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    .review-date {
+        color: #999;
+        font-size: 0.9rem;
+    }
+
+    .review-rating {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .stars {
+        display: flex;
+        gap: 3px;
+    }
+
+    .star {
+        font-size: 1.3rem;
+        color: #ffc107;
+    }
+
+    .star-empty {
+        color: #ddd;
+    }
+
+    .review-comment {
+        color: #333;
+        line-height: 1.7;
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    .no-reviews {
+        text-align: center;
+        padding: 80px 20px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .no-reviews i {
+        font-size: 4rem;
+        color: #ddd;
+        margin-bottom: 20px;
+    }
+
+    .no-reviews h3 {
+        color: #666;
+        margin-bottom: 10px;
+    }
+
+    .no-reviews p {
+        color: #999;
+    }
+</style>
+
+<div class="reviews-wrapper">
+    <div class="reviews-header">
+        <h1>
+            <i class="fas fa-star"></i> Đánh Giá Phòng
+        </h1>
+        <p>Xem tất cả đánh giá từ khách hàng</p>
+        @if (Model.Any())
+        {
+            <div class="reviews-stats">
+                <div class="stat-item">
+                    <i class="fas fa-comments"></i>
+                    <span>@Model.Count đánh giá</span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-star"></i>
+                    <span>@(Model.Average(r => r.Rating).ToString("F1")) / 5.0</span>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="reviews-list">
+            @foreach (var review in Model)
+            {
+                <div class="review-card">
+                    <div class="review-header-info">
+                        <div class="reviewer-info">
+                            <div class="reviewer-avatar">
+                                @(review.Booking?.Customer?.FullName?.Substring(0, 1).ToUpper() ?? "U")
+                            </div>
+                            <div class="reviewer-details">
+                                <h4>@(review.Booking?.Customer?.FullName ?? "Khách Hàng")</h4>
+                                <p>Đặt phòng #@review.BookingId</p>
+                            </div>
+                        </div>
+                        <div class="review-date">
+                            <i class="fas fa-calendar"></i> @review.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                        </div>
+                    </div>
+
+                    <div class="review-rating">
+                        <div class="stars">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <span class="star @(i <= review.Rating ? "" : "star-empty")">★</span>
+                            }
+                        </div>
+                        <span style="color: #666; font-weight: 600;">@review.Rating / 5</span>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(review.Comment))
+                    {
+                        <p class="review-comment">@review.Comment</p>
+                    }
+                    else
+                    {
+                        <p class="review-comment" style="color: #999; font-style: italic;">Không có nhận xét</p>
+                    }
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="no-reviews">
+            <i class="fas fa-comment-slash"></i>
+            <h3>Chưa Có Đánh Giá Nào</h3>
+            <p>Hãy là người đầu tiên đánh giá phòng này!</p>
+        </div>
+    }
+</div>
+

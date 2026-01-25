@@ -39,6 +39,7 @@ namespace Repositories
             return _context.Bookings
                 .Include(b => b.BookingRooms)
                     .ThenInclude(br => br.Room)
+                .Include(b => b.Review)
                 .Where(b => b.CustomerId == userId)
                 .OrderByDescending(b => b.CreatedAt)
                 .ToList();

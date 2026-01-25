@@ -60,49 +60,61 @@
 
 @if (Model.Results != null && Model.Results.Count > 0)
 {
-    <hr class="my-5" />
-    <h3 class="mb-3">Các Phòng Sẵn Có (@Model.Results.Count)</h3>
+    <div class="search-results-section">
+        <div class="results-header">
+            <h2 class="results-title">
+                <i class="fas fa-door-open"></i> Các Phòng Sẵn Có
+            </h2>
+            <span class="results-count">@Model.Results.Count phòng</span>
+        </div>
 
-    <div class="table-responsive">
-        <table class="table table-hover table-bordered">
-            <thead class="table-light">
-                <tr>
-                    <th style="width:140px;">Hình Ảnh</th>
-                    <th>Số Phòng</th>
-                    <th>Loại Phòng</th>
-                    <th class="text-center" style="width:90px;">Sức Chứa</th>
-                    <th>Giá / Đêm</th>
-                    <th class="text-center" style="width:240px;">Hành Động</th>
-                </tr>
-            </thead>
+        <div class="rooms-grid">
+            @foreach (var r in Model.Results)
+            {
+                <div class="room-card">
+                    <div class="room-card-image">
+                        @if (!string.IsNullOrWhiteSpace(r.ImageUrl))
+                        {
+                            <img src="@r.ImageUrl" alt="Phòng @r.RoomNumber" />
+                        }
+                        else
+                        {
+                            <div class="no-image">
+                                <i class="fas fa-image"></i>
+                                <span>Không có hình ảnh</span>
+                            </div>
+                        }
+                        <div class="room-card-badge">
+                            <i class="fas fa-check-circle"></i> Sẵn Sàng
+                        </div>
+                    </div>
 
-            <tbody>
-                @foreach (var r in Model.Results)
-                {
-                    <tr>
-                        <td class="align-middle">
-                            @if (!string.IsNullOrWhiteSpace(r.ImageUrl))
-                            {
-                                <img src="@r.ImageUrl"
-                                     style="width:120px;height:80px;object-fit:cover;border-radius:10px;border:1px solid #eee;" />
-                            }
-                            else
-                            {
-                                <div class="text-muted small">Không có hình ảnh</div>
-                            }
-                        </td>
+                    <div class="room-card-body">
+                        <div class="room-card-header">
+                            <h3 class="room-number">Phòng @r.RoomNumber</h3>
+                            <span class="room-type">@r.RoomTypeName</span>
+                        </div>
 
-                        <td class="align-middle fw-bold">@r.RoomNumber</td>
-                        <td class="align-middle">@r.RoomTypeName</td>
-                        <td class="align-middle text-center">@r.MaxOccupancy</td>
-                        <td class="align-middle text-success fw-bold">@r.PricePerNight.ToString("N0") VND</td>
+                        <div class="room-card-info">
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <span>Sức chứa: <strong>@r.MaxOccupancy</strong> khách</span>
+                            </div>
+                        </div>
 
-                        <td class="text-center">
+                        <div class="room-card-price">
+                            <span class="price-label">Giá / Đêm</span>
+                            <span class="price-value">@r.PricePerNight.ToString("N0")<small>đ</small></span>
+                        </div>
+
+                        <div class="room-card-actions">
                             <a asp-controller="Rooms"
                                asp-action="Details"
                                asp-route-id="@r.RoomId"
-                               class="btn btn-outline-primary btn-sm me-2">
-                                Xem Chi Tiết
+                               asp-route-checkIn="@Model.CheckIn.ToString("yyyy-MM-dd")"
+                               asp-route-checkOut="@Model.CheckOut.ToString("yyyy-MM-dd")"
+                               class="btn-details">
+                                <i class="fas fa-eye"></i> Chi Tiết
                             </a>
 
                             <a asp-controller="Bookings"
@@ -110,14 +122,14 @@
                                asp-route-roomId="@r.RoomId"
                                asp-route-checkIn="@Model.CheckIn.ToString("yyyy-MM-dd")"
                                asp-route-checkOut="@Model.CheckOut.ToString("yyyy-MM-dd")"
-                               class="btn btn-success btn-sm px-4">
-                                Đặt Ngay
+                               class="btn-book">
+                                <i class="fas fa-check-circle"></i> Đặt Ngay
                             </a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
     </div>
 }
 else if (Context.Request.Method == "POST")
@@ -132,6 +144,263 @@ else
         Vui lòng nhập ngày nhận phòng và ngày trả phòng rồi nhấn Tìm Kiếm.
     </div>
 }
+
+<style>
+    body {
+        background: #f5f5f5;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .search-results-section {
+        max-width: 1400px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    .results-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 3px solid #0066cc;
+    }
+
+    .results-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #0066cc;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .results-title i {
+        color: #0066cc;
+    }
+
+    .results-count {
+        background: #0066cc;
+        color: white;
+        padding: 10px 25px;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .rooms-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 30px;
+        margin-top: 30px;
+    }
+
+    .room-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        border: 2px solid #e0e0e0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .room-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        border-color: #0066cc;
+    }
+
+    .room-card-image {
+        position: relative;
+        width: 100%;
+        height: 250px;
+        overflow: hidden;
+        background: #f0f0f0;
+    }
+
+    .room-card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .room-card:hover .room-card-image img {
+        transform: scale(1.1);
+    }
+
+    .room-card-image .no-image {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #999;
+        background: #f5f5f5;
+    }
+
+    .room-card-image .no-image i {
+        font-size: 3rem;
+        margin-bottom: 10px;
+        opacity: 0.5;
+    }
+
+    .room-card-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(46, 125, 50, 0.95);
+        color: white;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        backdrop-filter: blur(10px);
+    }
+
+    .room-card-badge i {
+        font-size: 0.9rem;
+    }
+
+    .room-card-body {
+        padding: 25px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .room-card-header {
+        margin-bottom: 20px;
+    }
+
+    .room-number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #0066cc;
+        margin: 0 0 8px 0;
+    }
+
+    .room-type {
+        display: inline-block;
+        background: #f5f5f5;
+        color: #666;
+        padding: 5px 15px;
+        border-radius: 15px;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .room-card-info {
+        margin-bottom: 20px;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #666;
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+    }
+
+    .info-item i {
+        color: #0066cc;
+        width: 20px;
+        text-align: center;
+    }
+
+    .info-item strong {
+        color: #0066cc;
+    }
+
+    .room-card-price {
+        background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        text-align: center;
+        border: 2px solid #e0e0e0;
+    }
+
+    .price-label {
+        display: block;
+        font-size: 0.85rem;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+
+    .price-value {
+        display: block;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #0066cc;
+    }
+
+    .price-value small {
+        font-size: 1rem;
+        color: #999;
+        font-weight: 400;
+    }
+
+    .room-card-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: auto;
+    }
+
+    .btn-details,
+    .btn-book {
+        flex: 1;
+        padding: 12px 20px;
+        border-radius: 50px;
+        font-weight: 600;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+        border: 2px solid;
+    }
+
+    .btn-details {
+        background: white;
+        color: #0066cc;
+        border-color: #0066cc;
+    }
+
+    .btn-details:hover {
+        background: #0066cc;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-book {
+        background: #0066cc;
+        color: white;
+        border-color: #0066cc;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-book:hover {
+        background: #0052a3;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        color: white;
+    }   
+</style>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
