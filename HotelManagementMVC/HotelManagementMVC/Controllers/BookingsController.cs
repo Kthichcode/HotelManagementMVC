@@ -106,7 +106,10 @@ namespace HotelManagementMVC.Controllers
                 // Update booking status if fully paid by wallet
                 if (remaining <= 0)
                 {
-                    _bookingService.ConfirmPayment(bookingId, $"WALLET-{DateTime.UtcNow.Ticks}");
+                    // FIX: Do NOT call ConfirmPayment here because it creates a new VNPay payment record.
+                    // We already recorded the payment via RecordPayment above.
+                    _bookingService.UpdateStatus(bookingId, BusinessObjects.Enums.BookingStatus.Confirmed);
+                    
                     TempData["SuccessMessage"] = $"Booking successful! Paid full {deducted:N0} via Wallet.";
                     return RedirectToAction("Index");
                 }
