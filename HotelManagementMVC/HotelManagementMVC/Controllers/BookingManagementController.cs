@@ -1,4 +1,4 @@
-using BusinessObjects.Enums;
+﻿using BusinessObjects.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
@@ -16,13 +16,13 @@ namespace HotelManagementMVC.Controllers
         }
 
         // GET: List all bookings with filters
-        public IActionResult Index(DateTime? date, BookingStatus? status)
+        public IActionResult Index(DateTime? date, BookingStatus? status, string phoneNumber)
         {
-            var bookings = _bookingService.GetFilteredBookings(date, status);
+            var bookings = _bookingService.GetFilteredBookings(date, status, phoneNumber);
             
             ViewBag.SelectedDate = date?.ToString("yyyy-MM-dd");
             ViewBag.SelectedStatus = status;
-
+            ViewBag.SelectedPhoneNumber = phoneNumber;
             return View(bookings);
         }
 
@@ -51,6 +51,26 @@ namespace HotelManagementMVC.Controllers
             }
 
             return RedirectToAction(nameof(Details), new { id });
+        }
+
+        [Authorize(Roles = "Staff")] // Chỉ cho phép nhân viên thực hiện chức năng này
+        public IActionResult SearchByPhoneNumber()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Staff")] // Chỉ cho phép nhân viên thực hiện chức năng này
+        public IActionResult SearchByPhoneNumber(string phoneNumber)
+        {
+            if (string.IsNullOrEmpty(phoneNumber))
+            {
+                TempData["Error"] = "Please enter a phone number.";
+                return View();
+            }
+
+            var bookings = _bookingService.SearchBookingsByPhoneNumber(phoneNumber);
+            return View("SearchResults", bookings); // Hiển thị kết quả tìm kiếm
         }
     }
 }

@@ -26,6 +26,10 @@
                         }
                     </select>
                 </div>
+                <div class="col-md-3">
+                    <label class="form-label">Số Điện Thoại</label>
+                    <input type="text" name="phoneNumber" class="form-control" value="@ViewBag.SelectedPhoneNumber" placeholder="Nhập SĐT khách hàng" />
+                </div>
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-primary w-100">Lọc</button>
                 </div>
@@ -63,7 +67,7 @@
                                     @if (b.Customer != null)
                                     {
                                         <div>@b.Customer.FullName</div>
-                                        <small class="text-muted">@b.Customer.Email</small>
+                                        <small class="text-muted">@b.Customer.PhoneNumber</small>
                                     }
                                     else
                                     {

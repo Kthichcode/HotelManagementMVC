@@ -62,6 +62,16 @@ namespace Repositories
             }
         }
 
+        public List<Booking> GetByCustomerPhoneNumber(string phoneNumber)
+        {
+            return _context.Bookings
+                .Include(b => b.Customer)
+                .Where(b => b.Customer.PhoneNumber == phoneNumber)
+                .OrderByDescending(b => b.CreatedAt)
+                .ToList();
+        }
+
+
         public void Save()
         {
             _context.SaveChanges();

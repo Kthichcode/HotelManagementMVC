@@ -179,7 +179,7 @@ namespace Services
              _paymentRepo.Add(payment);
              _paymentRepo.Save();
         }
-        public List<Booking> GetFilteredBookings(DateTime? date, BookingStatus? status)
+        public List<Booking> GetFilteredBookings(DateTime? date, BookingStatus? status, string phoneNumber)
         {
             var query = _bookingRepo.GetQuery();
 
@@ -192,6 +192,11 @@ namespace Services
             if (status.HasValue)
             {
                 query = query.Where(b => b.Status == status.Value);
+            }
+
+            if (!string.IsNullOrEmpty(phoneNumber))
+            {
+                query = query.Where(b => b.Customer.PhoneNumber.Contains(phoneNumber));
             }
 
             return query.OrderByDescending(b => b.CreatedAt).ToList();
@@ -233,5 +238,11 @@ namespace Services
             _bookingRepo.UpdateStatus(bookingId, newStatus);
             _bookingRepo.Save();
         }
+
+        public List<Booking> SearchBookingsByPhoneNumber(string phoneNumber)
+        {
+            return _bookingRepo.GetByCustomerPhoneNumber(phoneNumber);
+        }
+
     }
 }

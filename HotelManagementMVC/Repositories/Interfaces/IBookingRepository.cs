@@ -16,5 +16,7 @@ namespace Repositories.Interfaces
         IQueryable<Booking> GetQuery();
         void UpdateStatus(int bookingId, BookingStatus status);
         void Save();
+
+        public List<Booking> GetByCustomerPhoneNumber(string phoneNumber);
     }
 }
