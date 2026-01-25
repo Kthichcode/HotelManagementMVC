@@ -1,5 +1,4 @@
 ﻿using BusinessObjects;
-using DataAccessObjects;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Interfaces;
 using System.Threading.Tasks;
@@ -7,17 +6,12 @@ using System.Threading.Tasks;
 namespace Repositories
 {
     public class UserRepository : IUserRepository
-    {      
-        private readonly AccountDAO _accountDao;
-
-        public UserRepository(AccountDAO accountDao)
-        {
-            _accountDao = accountDao;
-        }
-
+    {
+        private readonly AppDbContext _context;
+      
         public async Task<ApplicationUser> GetUserByUsernameAsync(string username)
         {
-            return await _accountDao.GetUserByUsernameAsync(username);
+            return await _context.Users.FirstOrDefaultAsync(u => u.UserName == username);
         }
     }
 }
